@@ -9,11 +9,10 @@ import (
 	"strings"
 )
 
-func checkArgs() bool {
+func checkArgs() {
 	if len(os.Args) != 3 {
 		panic("THe number of arguments is incorrect")
 	}
-	return true
 }
 
 func checkForFile(err error) {
@@ -43,31 +42,31 @@ func main() {
 	fileName = os.Args[2]
 	keyLength = float64(len(key))
 
-	fileContent, err := ioutil.ReadFile(fileName)
+	inputFileContent, err := ioutil.ReadFile(fileName)
 	checkForFile(err)
 	checkForKeySize(keyLength)
-	fmt.Println(fileContent)
-	fmt.Println(key)
 
-	regExp, err := regexp.Compile("[^a-zA-Z]+")
+	regExp, err := regexp.Compile("[^a-zA-Z]")
 	checkRegErr(err)
-	processedString := strings.ToUpper(regExp.ReplaceAllString(string(fileContent), ""))
-	byteString := []byte(processedString)
-	fmt.Println(processedString)
+	processedContent := strings.ToUpper(regExp.ReplaceAllString(string(inputFileContent), ""))
+	byteInputContent := []byte(processedContent)
 
 	m := make(map[int]byte)
 
-	for i := range byteString {
+	for i := range byteInputContent {
 		keyPlace := int(math.Mod(float64(i), keyLength))
-		m[i] = key[keyPlace] // map position of plaintext to position of key
-		byteString[i] -= 65  // reduce to 0 - 25 code
-		m[i] -= 65           // reduce to 0 - 25 code
+		m[i] = key[keyPlace]      // map position of plaintext to position of key
+		byteInputContent[i] -= 65 // reduce to 0 - 25 code
+		m[i] -= 65                // reduce to 0 - 25 code
 	}
 
-	for i := range byteString {
-		byteString[i] = byte(math.Mod(float64(byteString[i]+m[i]), 26))
-		byteString[i] += 65
+	cipherText := make([]byte, len(byteInputContent))
+
+	for i := range byteInputContent {
+		cipherText[i] = byte(math.Mod(float64(byteInputContent[i]+m[i]), 26))
+		cipherText[i] += 65
 	}
 
-	fmt.Println(string(byteString))
+	fmt.Println(string(cipherText))
+
 }
