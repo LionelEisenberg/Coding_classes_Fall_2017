@@ -1,13 +1,14 @@
 package main
 
 import (
-    "os"
-    "fmt"
+	"fmt"
+	"math"
 )
 
 func main() {
 
-    for _, v := range os.Args {
-        fmt.Println(v);
-    }
+	var a, b float64
+	a = 12
+	b = 5
+	fmt.Println(math.Mod(a, b))
 }
