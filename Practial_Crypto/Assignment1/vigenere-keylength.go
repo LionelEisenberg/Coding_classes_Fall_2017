@@ -4,6 +4,8 @@ import (
     "os"
     "io/ioutil"
     "fmt"
+    "strings"
+    "regexp"
 )
 
 func checkArgs() {
@@ -19,18 +21,19 @@ func checkForFile(err error) {
 }
 
 func getIOC(keyLength int, cipher string) float64{
-    fmt.Println(keyLength)
+    fmt.Println()
     cipherLength := len([]rune(cipher))
-    var IOCSum float64;
+    var IOCSum, cosetCount float64;
+    IOCSum = 0;
     for i := 0; i < keyLength; i++ {
         var coset []byte;
         for j := i; j < cipherLength; j += keyLength {
             coset = append(coset, cipher[j])
         }
-        fmt.Println(string(coset));
         IOCSum += IOCForCoset(string(coset), float64(cipherLength))
+        cosetCount++;
     }
-    return IOCSum;
+    return IOCSum/cosetCount;
 }
 
 func IOCForCoset(coset string, cipherLength float64) float64 {
@@ -39,8 +42,8 @@ func IOCForCoset(coset string, cipherLength float64) float64 {
     for i := range m {
         frequencySum += m[i] * (m[i] - 1);
     }
-
-    IOC := 1/(cipherLength * (cipherLength - 1)) * frequencySum
+    IOC := 1/(float64(len([]rune(coset))) * (float64(len([]rune(coset))) - 1)) * frequencySum
+    fmt.Println(IOC);
     return IOC;
 }
 
@@ -58,6 +61,10 @@ func main() {
 
     cipherTextContent, err := ioutil.ReadFile(cipherFileName)
 	checkForFile(err)
+
+    regExp, err := regexp.Compile("[^a-zA-Z]")
+	cipherTextContent = []byte(strings.ToUpper(regExp.ReplaceAllString(string(cipherTextContent), "")))
+
     var maxKeyLength = 21
     if len(cipherTextContent) < 20 {
         maxKeyLength = len(cipherTextContent)
@@ -65,9 +72,8 @@ func main() {
 
     var arrayOfIOC []float64;
     maxKeyLength++;
-    for keyLength := 1; keyLength < 5; keyLength++ {
+    for keyLength := 1; keyLength < maxKeyLength; keyLength++ {
         arrayOfIOC = append(arrayOfIOC, getIOC(keyLength, string(cipherTextContent)))
     }
     fmt.Println(arrayOfIOC)
-    fmt.Println(cipherTextContent)
 }
