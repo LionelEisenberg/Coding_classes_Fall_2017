@@ -30,7 +30,7 @@ func checkRegErr(err error) {
 func checkForKeySize(keyLength float64) {
 	if keyLength > 32 {
 		panic("key is too big, please try with a key smaller than 32 characters")
-	}
+	} 
 }
 
 func main() {
