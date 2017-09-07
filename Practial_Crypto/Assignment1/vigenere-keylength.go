@@ -8,7 +8,7 @@ import (
     "regexp"
 )
 
-func checkArgs() {
+func checkArgs() { //checks that the correct number of arguments are given
 	if len(os.Args) != 2 {
 		panic("THe number of arguments is incorrect")
 	}
@@ -20,8 +20,19 @@ func checkForFile(err error) {
     }
 }
 
+func getMax(slice []float64) int {
+    max := 0.0;
+    var maxIndex int;
+    for i, v := range slice {
+        if v > max {
+            max = v;
+            maxIndex = i;
+        }
+    }
+    return maxIndex;
+}
+
 func getIOC(keyLength int, cipher string) float64{
-    fmt.Println()
     cipherLength := len([]rune(cipher))
     var IOCSum, cosetCount float64;
     IOCSum = 0;
@@ -43,7 +54,6 @@ func IOCForCoset(coset string, cipherLength float64) float64 {
         frequencySum += m[i] * (m[i] - 1);
     }
     IOC := 1/(float64(len([]rune(coset))) * (float64(len([]rune(coset))) - 1)) * frequencySum
-    fmt.Println(IOC);
     return IOC;
 }
 
@@ -75,5 +85,8 @@ func main() {
     for keyLength := 1; keyLength < maxKeyLength; keyLength++ {
         arrayOfIOC = append(arrayOfIOC, getIOC(keyLength, string(cipherTextContent)))
     }
+    bestGuess := getMax(arrayOfIOC) + 1
+
     fmt.Println(arrayOfIOC)
+    fmt.Println("The key is of length: ", bestGuess)
 }
