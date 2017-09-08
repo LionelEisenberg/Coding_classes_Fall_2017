@@ -21,12 +21,12 @@ func checkForFile(err error) {
 }
 
 func getMax(slice []float64) int {
-    max := 0.0;
+    const max = 0.064
     var maxIndex int;
     for i, v := range slice {
         if v > max {
-            max = v;
             maxIndex = i;
+            break
         }
     }
     return maxIndex;
