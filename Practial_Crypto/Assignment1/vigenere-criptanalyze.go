@@ -30,7 +30,7 @@ func checkForFile(err error) {
     }
 }
 
-
+//checks that the key is less than 32 chars, adn that the keylength given is an integer
 func checkForKeySize(KL int, err error) {
     if KL > 32 {
         panic("the keylength is too big, please reenter key");
@@ -40,21 +40,23 @@ func checkForKeySize(KL int, err error) {
     }
 }
 
+//function gets the chiSquared value for a coset
 func getChiSquared(coset []byte) float64 {
-    m := make(map[byte]float64);
+    m := make(map[byte]float64); //map maps frequencies of letters in the coset
     var chiSquare float64;
     for _,v := range coset {
         m[v]++;
     }
     for i := 65; i < 91; i++ {
-        m[byte(i)] = m[byte(i)] / float64(len(coset))
+        m[byte(i)] = m[byte(i)] / float64(len(coset)) //turn raw amounts to frequencies
     }
-    for i := 65; i < 91; i++ {
+    for i := 65; i < 91; i++ { //calculates the chiSquare for the coset
         chiSquare += (m[byte(i)] - englishLetterFrequency[byte(i)]) * (m[byte(i)] - englishLetterFrequency[byte(i)]) / englishLetterFrequency[byte(i)]
     }
     return chiSquare
 }
 
+//Function gets the index associated to the minimum value of an array.
 func getMin(arr []float64) int {
     min := 1000.0
     minIndex := -1;
@@ -67,9 +69,11 @@ func getMin(arr []float64) int {
     return minIndex;
 }
 
+//creates a guess for the key from the minimum chiSquared value of each coset
 func getKey(arr []int) string {
     var key []byte;
     for _,v := range arr {
+        //ad 65 to get back to ASCII code
         key = append(key, byte(v + 65))
     }
     return string(key)
@@ -78,31 +82,36 @@ func getKey(arr []int) string {
 func main() {
     checkArgs();
 
+    //Get filename and keylength from arguments
     cipherFileName := os.Args[1];
     keyLength, err1 := strconv.Atoi(os.Args[2]);
-
     cipherText, err2 := ioutil.ReadFile(cipherFileName)
-    cipherLength := len(cipherText) - 1
 	checkForKeySize(keyLength, err1)
     checkForFile(err2)
+
+    //gets rid of any non alphabetic characters and whitespace
     regExp,err := regexp.Compile("[^a-zA-Z]")
     if err != nil {
         panic(err)
     }
     cipherText = []byte(strings.ToUpper(regExp.ReplaceAllString(string(cipherText), "")))
-    var chiSquaredMinArray []int;
+    cipherLength := len(cipherText)
+    var chiSquaredMinArray []int; //array of all chiSquared minimum values
 
+    // We want to create cosets, smaller groups of text that are the keys seperated by keyLength
     for j := 0; j < keyLength; j++ {
         var coset []byte;
         var chiSquaredArray []float64;
         for k := j; k < cipherLength; k += keyLength {
-            coset = append(coset, cipherText[k] - 65)
+            coset = append(coset, cipherText[k] - 65) //make the coset
         }
+        //Do 25 shifts and calculate chiSquared for each
         for i := 0; i < 26; i++ {
             var shiftedCoset []byte;
+            //shift coset
             for _,v := range coset {
                 var shiftedLetter byte;
-                if v-byte(i) > 26 {
+                if v-byte(i) > 26 {//deal with overflow
         			shiftedLetter = v-byte(i) + 26
         		} else {
         			shiftedLetter = v-byte(i)
