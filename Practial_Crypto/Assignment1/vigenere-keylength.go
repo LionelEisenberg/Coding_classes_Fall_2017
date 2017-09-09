@@ -87,6 +87,5 @@ func main() {
     }
     bestGuess := getMax(arrayOfIOC) + 1
 
-    fmt.Println(arrayOfIOC)
     fmt.Println("The key is of length: ", bestGuess)
 }
