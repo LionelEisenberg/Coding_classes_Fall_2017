@@ -12,13 +12,42 @@ Pixel32::Pixel32(const Pixel& p)
 {
 }
 
+float RandomFloat(float a, float b) {
+    float random = ((float) rand()) / (float) RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
+}
+
 int Image32::AddRandomNoise(const float& noise,Image32& outputImage) const
 {
+	if (noise >= 0 && noise <= 1) {
+		outputImage.setSize(this->width(), this->height());
+		for (int i = 0; i < this->width(); i++) {
+			for (int j = 0; j < this->height(); j++) {
+				outputImage.pixel(i,j) = this->pixel(i,j);
+				float rnoise = RandomFloat(0,1)-noise;
+				outputImage.pixel(i,j).r *= rnoise;
+				outputImage.pixel(i,j).b *= rnoise;
+				outputImage.pixel(i,j).g *= rnoise;
+			}
+		}
+		return 1;
+	}
 	return 0;
 }
 int Image32::Brighten(const float& brightness,Image32& outputImage) const
 {
-	return 0;
+	outputImage.setSize(this->width(), this->height());
+	for (int i = 0; i < this->width(); i++) {
+		for (int j = 0; j < this->height(); j++) {
+			outputImage.pixel(i,j) = this->pixel(i,j);
+			outputImage.pixel(i,j).r *= brightness;
+			outputImage.pixel(i,j).b *= brightness;
+			outputImage.pixel(i,j).g *= brightness;
+		}
+	}
+	return 1;
 }
 
 int Image32::Luminance(Image32& outputImage) const
@@ -88,7 +117,7 @@ int Image32::RotateBilinear(const float& angle,Image32& outputImage) const
 {
 	return 0;
 }
-	
+
 int Image32::RotateGaussian(const float& angle,Image32& outputImage) const
 {
 	return 0;

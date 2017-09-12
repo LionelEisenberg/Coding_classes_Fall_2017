@@ -85,7 +85,7 @@ public:
 	int AddRandomNoise(const float& noise,Image32& outputImage) const;
 
 	/** This method brightens each pixel and writes out the new image to outputImage.
-	  * The value of the input parameter is the scale by which the image should be brightened. 
+	  * The value of the input parameter is the scale by which the image should be brightened.
 	  * The method returns 1 if it has been implemented.
 	  */
 	int Brighten(const float& brightness,Image32& outputImage) const;
@@ -134,7 +134,7 @@ public:
 	  * The method returns 1 if it has been implemented.
 	  */
 	int FloydSteinbergDither(const int& bits,Image32& outputImage) const;
-	
+
 	/** This method blurs the image using a 3x3 mask.
 	  * The method returns 1 if it has been implemented.
 	  */
@@ -174,7 +174,7 @@ public:
 	  * The method returns 1 if it has been implemented.
 	  */
 	int RotateBilinear(const float& angle,Image32& outputImage) const;
-	
+
 	/** This method rotates an image using Gaussian-weighting to obtain pixel values and writes out the new image to outputImage.
 	  * The value of the input parameter is the angle of rotation (in degrees).
 	  * The method returns 1 if it has been implemented.
@@ -253,4 +253,3 @@ public:
 
 };
 #endif // IMAGE_INCLUDED
-

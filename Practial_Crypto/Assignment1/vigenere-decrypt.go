@@ -8,18 +8,21 @@ import (
 	"strings"
 )
 
+//function checks that there are the right number of arguments
 func checkArgs() {
 	if len(os.Args) != 3 {
-		panic("THe number of arguments is incorrect")
+		panic("The number of arguments is incorrect")
 	}
 }
 
+//checks that the file that was asked exists
 func checkForFile(err error) {
 	if err != nil {
 		panic("the name of the file is incorrect")
 	}
 }
 
+//makes sure the key size is correct
 func checkForKeySize(keyLength float64) {
 	if keyLength > 32 {
 		panic("key is too big, please try with a key smaller than 32 characters")
@@ -53,7 +56,7 @@ func main() {
 
 	for i := range byteCipherText {
 		var plainTextLetter byte
-		if byteCipherText[i]-m[i] > 26 {
+		if byteCipherText[i]-m[i] > 26 { //if the byte wrap around ot 255 because of overflow, add 26 to "mod"
 			plainTextLetter = byteCipherText[i] - m[i] + 26
 		} else {
 			plainTextLetter = byteCipherText[i] - m[i]
@@ -63,5 +66,4 @@ func main() {
 	}
 
 	fmt.Println(string(plainText))
-
 }
