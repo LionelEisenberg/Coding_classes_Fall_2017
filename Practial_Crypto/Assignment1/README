@@ -1,0 +1,63 @@
+README for Assignment n# 1
+Lionel Eisenberg - leisenb5 - leisenb5@jhu.edu
+600.445 Practical Cryptographic Systems, Fall 2017
+Partner: None
+
+===============================================================================
+
+FILES: DIRECTORY AND FUNCTIONALITY:
+
+vigenere-encrypt.go: encrypts a plainText using a specific key with the vigenere
+                     cypher. The encryption will strip all non-alphabetic chars
+                     from plaintext and will capitalize it.
+        to build: go build vigenere-encrypt.go
+        to run: ./vigenere-encrypt <KEY> <plainTextFileName>
+
+vigenere-decrypt.go: decrypts a ciphertext using a specific key with the vigenere
+                     cypher. The encryption will strip all non-alphabetic chars
+                     from cipherText and will capitalize it.
+        to build: go build vigenere-decrypt.go
+        to run: ./vigenere-encrypt <KEY> <cipherTextFileName>
+
+vigenere-keylength.go: makes a reasonable guess at the keylength of a cipherText
+                       We use the Index Of Coincidence technique, research taken
+                       from: http://pages.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-IOC.html
+        to build: go build vigenere-keylength.go
+        to run: ./vigenere-encrypt <cipherTextFileName>
+
+vigenere-keylength.go: makes a reasonable guess at the keylength of a cipherText
+                       We use the Index Of Coincidence technique, research taken
+                       from: http://pages.mtu.edu/~shene/NSF-4/Tutorial/VIG/Vig-IOC.html
+        to build: go build vigenere-keylength.go
+        to run: ./vigenere-keylength <cipherTextFileName>
+
+vigenere-cryptanalyze.go: makes a reasonable guess at the key (or keys) used to
+                       encrypt the given cipherText. I used frequency analysis
+                       and the chiSquared method
+        to build: go build vigenere-cryptanalyze.go
+        to run: ./vigenere-cryptanalyze <cipherTextFileName> <KEYLENGTH>
+
+===============================================================================
+
+PROBLEMS TO SIGNAL:
+
+None.
+
+===============================================================================
+
+EXTRA NOTES:
+
+Part 4:1
+
+This vigenere cipher will be more secure if used with a key that is as long as
+the message as it will make it impossible for an adversary to commit a
+frequency analysis attack on the cipher. Indeed what this would do
+is essentially turn the vigenere cipher into a one-time pad. As we have seen in
+class the one-time pad is essentially uncrackable (except for brute force)
+as for each cipher-plaintext combination there is an equiprobable key (if the
+key is chosen at random). The limitations I would impose on the key would be to
+be chosen at random and of course to not make it too short, otherwise a
+brute force approach might be possible. The limitations with such a technique is
+that the key will be unreasonably long and make the whole process very hard.
+
+===============================================================================
