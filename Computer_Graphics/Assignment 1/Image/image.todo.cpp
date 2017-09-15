@@ -19,6 +19,14 @@ float RandomFloat(float a, float b) {
     return a + r;
 }
 
+int greyScale(Pixel32 p) {
+  const float redWeight = 0.30;
+  const float greenWeight = 0.59;
+  const float blueWeight = 0.11;
+  float luminance = p.r * redWeight + p.g * greenWeight + p.b * blueWeight;
+  return floor(luminance);
+}
+
 int Image32::AddRandomNoise(const float& noise,Image32& outputImage) const
 {
 	if (noise >= 0 && noise <= 1) {
@@ -52,11 +60,29 @@ int Image32::Brighten(const float& brightness,Image32& outputImage) const
 
 int Image32::Luminance(Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+	for (int i = 0; i < this->width(); i++) {
+		for (int j = 0; j < this->height(); j++) {
+      int luminance = greyScale(this->pixel(i,j));
+			outputImage.pixel(i,j).r = luminance;
+      outputImage.pixel(i,j).g = luminance;
+      outputImage.pixel(i,j).b = luminance;
+		}
+	}
+	return 1;
 }
 
 int Image32::Contrast(const float& contrast,Image32& outputImage) const
 {
+  outputImage.setSize(this->width(), this->height());
+	for (int i = 0; i < this->width(); i++) {
+		for (int j = 0; j < this->height(); j++) {
+      int luminance = greyScale(this->pixel(i,j));
+			outputImage.pixel(i,j).r = luminance;
+      outputImage.pixel(i,j).g = luminance;
+      outputImage.pixel(i,j).b = luminance;
+		}
+	}
 	return 0;
 }
 
