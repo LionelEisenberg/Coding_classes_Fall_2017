@@ -19,12 +19,21 @@ float RandomFloat(float a, float b) {
     return a + r;
 }
 
-int greyScale(Pixel32 p) {
+float greyScale(Pixel32 p) {
   const float redWeight = 0.30;
   const float greenWeight = 0.59;
   const float blueWeight = 0.11;
   float luminance = p.r * redWeight + p.g * greenWeight + p.b * blueWeight;
-  return floor(luminance);
+  return luminance;
+}
+
+int truncate(float value) {
+  if (value > 255) {
+    return 255;
+  } else if (value < 0) {
+    return 0;
+  }
+  return value;
 }
 
 int Image32::AddRandomNoise(const float& noise,Image32& outputImage) const
@@ -50,9 +59,9 @@ int Image32::Brighten(const float& brightness,Image32& outputImage) const
 	for (int i = 0; i < this->width(); i++) {
 		for (int j = 0; j < this->height(); j++) {
 			outputImage.pixel(i,j) = this->pixel(i,j);
-			outputImage.pixel(i,j).r *= brightness;
-			outputImage.pixel(i,j).b *= brightness;
-			outputImage.pixel(i,j).g *= brightness;
+			outputImage.pixel(i,j).r = truncate(outputImage.pixel(i,j).r * brightness);
+			outputImage.pixel(i,j).b = truncate(outputImage.pixel(i,j).b * brightness);
+      outputImage.pixel(i,j).g = truncate(outputImage.pixel(i,j).g * brightness);
 		}
 	}
 	return 1;
@@ -63,10 +72,10 @@ int Image32::Luminance(Image32& outputImage) const
   outputImage.setSize(this->width(), this->height());
 	for (int i = 0; i < this->width(); i++) {
 		for (int j = 0; j < this->height(); j++) {
-      int luminance = greyScale(this->pixel(i,j));
-			outputImage.pixel(i,j).r = luminance;
-      outputImage.pixel(i,j).g = luminance;
-      outputImage.pixel(i,j).b = luminance;
+      float luminance = greyScale(this->pixel(i,j));
+			outputImage.pixel(i,j).r = truncate(luminance);
+      outputImage.pixel(i,j).g = truncate(luminance);
+      outputImage.pixel(i,j).b = truncate(luminance);
 		}
 	}
 	return 1;
@@ -75,25 +84,48 @@ int Image32::Luminance(Image32& outputImage) const
 int Image32::Contrast(const float& contrast,Image32& outputImage) const
 {
   outputImage.setSize(this->width(), this->height());
+  float luminance = 0;
 	for (int i = 0; i < this->width(); i++) {
 		for (int j = 0; j < this->height(); j++) {
-      int luminance = greyScale(this->pixel(i,j));
-			outputImage.pixel(i,j).r = luminance;
-      outputImage.pixel(i,j).g = luminance;
-      outputImage.pixel(i,j).b = luminance;
+      luminance += greyScale(this->pixel(i,j));
 		}
 	}
-	return 0;
+  float avgLuminance = luminance / (this->width() * this->height());
+  for (int i = 0; i < this->width(); i++) {
+	  for (int j = 0; j < this->height(); j++) {
+      outputImage.pixel(i,j).r = truncate((this->pixel(i,j).r - avgLuminance) * contrast + avgLuminance);
+      outputImage.pixel(i,j).g = truncate((this->pixel(i,j).g - avgLuminance) * contrast + avgLuminance);
+      outputImage.pixel(i,j).b = truncate((this->pixel(i,j).b - avgLuminance) * contrast + avgLuminance);
+	  }
+	}
+	return 1;
 }
 
 int Image32::Saturate(const float& saturation,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  for (int i = 0; i < this->width(); i++) {
+	  for (int j = 0; j < this->height(); j++) {
+      outputImage.pixel(i,j).r = truncate((this->pixel(i,j).r - greyScale(this->pixel(i,j))) * saturation + greyScale(this->pixel(i,j)));
+      outputImage.pixel(i,j).g = truncate((this->pixel(i,j).g - greyScale(this->pixel(i,j))) * saturation + greyScale(this->pixel(i,j)));
+      outputImage.pixel(i,j).b = truncate((this->pixel(i,j).b - greyScale(this->pixel(i,j))) * saturation + greyScale(this->pixel(i,j)));
+	  }
+	}
+	return 1;
 }
 
 int Image32::Quantize(const int& bits,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+      //printf("%f\n", floor((this->pixel(i,j).r / 255.0) * pow(2, bits)));
+      outputImage.pixel(i,j).r = ceil((this->pixel(i,j).r / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
+      outputImage.pixel(i,j).g = ceil((this->pixel(i,j).g / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
+      outputImage.pixel(i,j).b = ceil((this->pixel(i,j).b / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
+    }
+  }
+	return 1;
 }
 
 int Image32::RandomDither(const int& bits,Image32& outputImage) const
