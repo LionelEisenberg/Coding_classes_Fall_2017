@@ -38,21 +38,21 @@ int truncate(float value) {
 
 int Image32::AddRandomNoise(const float& noise,Image32& outputImage) const
 {
-	if (noise >= 0 && noise <= 1) {
 		outputImage.setSize(this->width(), this->height());
 		for (int i = 0; i < this->width(); i++) {
 			for (int j = 0; j < this->height(); j++) {
 				outputImage.pixel(i,j) = this->pixel(i,j);
-				float rnoise = RandomFloat(0,1)-noise;
-				outputImage.pixel(i,j).r *= rnoise;
-				outputImage.pixel(i,j).b *= rnoise;
-				outputImage.pixel(i,j).g *= rnoise;
+				float rnoise1 = RandomFloat(-255,255)*noise;
+        float rnoise2 = RandomFloat(-255,255)*noise;
+        float rnoise3 = RandomFloat(-255,255)*noise;
+				outputImage.pixel(i,j).r = truncate(outputImage.pixel(i,j).r + rnoise1);
+				outputImage.pixel(i,j).b = truncate(outputImage.pixel(i,j).b + rnoise2);
+				outputImage.pixel(i,j).g = truncate(outputImage.pixel(i,j).g + rnoise3);
 			}
 		}
 		return 1;
-	}
-	return 0;
 }
+
 int Image32::Brighten(const float& brightness,Image32& outputImage) const
 {
 	outputImage.setSize(this->width(), this->height());
@@ -119,21 +119,33 @@ int Image32::Quantize(const int& bits,Image32& outputImage) const
   outputImage.setSize(this->width(), this->height());
   for (int i = 0; i < this->width(); i++) {
     for (int j = 0; j < this->height(); j++) {
-      //printf("%f\n", floor((this->pixel(i,j).r / 255.0) * pow(2, bits)));
-      outputImage.pixel(i,j).r = ceil((this->pixel(i,j).r / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
-      outputImage.pixel(i,j).g = ceil((this->pixel(i,j).g / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
-      outputImage.pixel(i,j).b = ceil((this->pixel(i,j).b / 255.0) * (pow(2, bits) + 1) * 255.0 / (pow(2, bits) + 1);
+        outputImage.pixel(i,j).r = truncate(floor((this->pixel(i,j).r / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).g = truncate(floor((this->pixel(i,j).g / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).b = truncate(floor((this->pixel(i,j).b / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+      }
     }
-  }
 	return 1;
 }
 
 int Image32::RandomDither(const int& bits,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+        float rnoise1 = RandomFloat(-1,1) / (float) pow(2, bits);
+        float rnoise2 = RandomFloat(-1,1) / (float) pow(2, bits);
+        float rnoise3 = RandomFloat(-1,1) / (float) pow(2, bits);
+        outputImage.pixel(i,j).r = truncate(floor(((this->pixel(i,j).r / 255.0) + rnoise1) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).g = truncate(floor(((this->pixel(i,j).g / 255.0) + rnoise2) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).b = truncate(floor(((this->pixel(i,j).b / 255.0) + rnoise3) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+      }
+    }
+  return 1;
 }
+
 int Image32::OrderedDither2X2(const int& bits,Image32& outputImage) const
 {
+
 	return 0;
 }
 
@@ -144,13 +156,60 @@ int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
 
 int Image32::Blur3X3(Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  float blurMatrix[3][3] = {{1/16.0, 2/16.0, 1/16.0}, {2/16.0, 4/16.0, 2/16.0}, {1/16.0, 2/16.0, 1/16.0}};
+  for (int i = 0; i < this->width(); i++) {
+	  for (int j = 0; j < this->height(); j++) {
+      float sumR = 0;
+      float sumB = 0;
+      float sumG = 0;
+      for (int k = i - 1; k <= i + 1; k++) {
+        for (int l = j - 1; l <= j + 1; l++) {
+          if (k <= 0|| k >= this->width() || l <= 0 || l >= this->height()) {
+            continue;
+          } else {
+            sumR += this->pixel(k,l).r * blurMatrix[k-(i-1)][l-(j-1)];
+            sumB += this->pixel(k,l).b * blurMatrix[k-(i-1)][l-(j-1)];
+            sumG += this->pixel(k,l).g * blurMatrix[k-(i-1)][l-(j-1)];
+          }
+        }
+      }
+      outputImage.pixel(i,j).r = truncate(sumR);
+      outputImage.pixel(i,j).g = truncate(sumG);
+      outputImage.pixel(i,j).b = truncate(sumB);
+	  }
+	}
+	return 1;
 }
 
 int Image32::EdgeDetect3X3(Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  float edgeMatrix[3][3] = {{-1/8.0, -1/8.0, -1/8.0}, {-1/8.0, 1, -1/8.0}, {-1/8.0, -1/8.0, -1/8.0}};
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+      float sumR = 0;
+      float sumB = 0;
+      float sumG = 0;
+      for (int k = i - 1; k <= i + 1; k++) {
+        for (int l = j - 1; l <= j + 1; l++) {
+          if (k <= 0|| k >= this->width() || l <= 0 || l >= this->height()) {
+            continue;
+          } else {
+            sumR += this->pixel(k,l).r * edgeMatrix[k-(i-1)][l-(j-1)];
+            sumB += this->pixel(k,l).b * edgeMatrix[k-(i-1)][l-(j-1)];
+            sumG += this->pixel(k,l).g * edgeMatrix[k-(i-1)][l-(j-1)];
+          }
+        }
+      }
+      outputImage.pixel(i,j).r = truncate(sumR * 5);
+      outputImage.pixel(i,j).g = truncate(sumG * 5);
+      outputImage.pixel(i,j).b = truncate(sumB * 5);
+    }
+  }
+  return 1;
 }
+
 int Image32::ScaleNearest(const float& scaleFactor,Image32& outputImage) const
 {
 	return 0;
