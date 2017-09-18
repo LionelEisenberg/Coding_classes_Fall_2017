@@ -145,13 +145,52 @@ int Image32::RandomDither(const int& bits,Image32& outputImage) const
 
 int Image32::OrderedDither2X2(const int& bits,Image32& outputImage) const
 {
+  const int n = 2;
+  outputImage.setSize(this->width(), this->height());
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+        int ditherWeight;
+        if (i % n == 0 && j % n == 0) {
+          ditherWeight = 1;
+        } else if (i % n != 0 && j % n != 0) {
+          ditherWeight = 2;
+        } else if (i % n == 0 && j % n != 0) {
+          ditherWeight = 3;
+        } else if (i % n != 0 && j % n == 0) {
+          ditherWeight = 4;
+        }
 
-	return 0;
+        float cR = (this->pixel(i,j).r / 255.0) * (pow(2, bits) - 1);
+        float cG = (this->pixel(i,j).g / 255.0) * (pow(2, bits) - 1);
+        float cB = (this->pixel(i,j).b / 255.0) * (pow(2, bits) - 1);
+
+        float eR = cR - floor(cR);
+        float eG = cG - floor(cG);
+        float eB = cB - floor(cB);
+
+        if (eR > ditherWeight / (pow(n,2) + 1)) {
+          outputImage.pixel(i,j).r = truncate(ceil(cR) * 255 / (pow(2, bits) - 1));
+        } else {
+          outputImage.pixel(i,j).r = truncate(floor(cR) * 255 / (pow(2, bits) - 1));
+        } if (eG > ditherWeight / (pow(n,2) + 1)) {
+          outputImage.pixel(i,j).g = truncate(ceil(cG) * 255 / (pow(2, bits) - 1));
+        } else {
+          outputImage.pixel(i,j).g = truncate(floor(cG) * 255 / (pow(2, bits) - 1));
+        } if (eB > ditherWeight / (pow(n,2) + 1)) {
+          outputImage.pixel(i,j).b = truncate(ceil(cB) * 255 / (pow(2, bits) - 1));
+        } else {
+          outputImage.pixel(i,j).b = truncate(floor(cB) * 255 / (pow(2, bits) - 1));
+        }
+      }
+    }
+  return 1;
 }
 
 int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width(), this->height());
+  Image32 souce = *this;
+	return 1;
 }
 
 int Image32::Blur3X3(Image32& outputImage) const
