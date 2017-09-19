@@ -188,8 +188,54 @@ int Image32::OrderedDither2X2(const int& bits,Image32& outputImage) const
 
 int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
 {
+  const float alpha = 7/16.0;
+  const float beta = 3/16.0;
+  const float gamma = 5/16.0;
+  const float delta = 1/16.0;
   outputImage.setSize(this->width(), this->height());
-  Image32 souce = *this;
+  Image32 quantized;
+  quantized.setSize(this->width(), this->height());
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+      quantized.pixel(i,j) = this->pixel(i,j);
+    }
+  }
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+        outputImage.pixel(i,j).r = truncate(floor((quantized.pixel(i,j).r / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).g = truncate(floor((quantized.pixel(i,j).g / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+        outputImage.pixel(i,j).b = truncate(floor((quantized.pixel(i,j).b / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
+
+        float errorR = quantized.pixel(i,j).r - outputImage.pixel(i,j).r;
+        float errorG = quantized.pixel(i,j).g - outputImage.pixel(i,j).g;
+        float errorB = quantized.pixel(i,j).b - outputImage.pixel(i,j).b;
+
+        if (i + 1 != this->width()) {
+          quantized.pixel(i + 1,j).r = truncate(quantized.pixel(i + 1,j).r + errorR * alpha);
+          quantized.pixel(i + 1,j).g = truncate(quantized.pixel(i + 1,j).g + errorG * alpha);
+          quantized.pixel(i + 1,j).b = truncate(quantized.pixel(i + 1,j).b + errorB * alpha);
+        }
+
+        if (j + 1 != this->height()) {
+          if (i - 1 >= 0) {
+            quantized.pixel(i - 1,j + 1).r = truncate(quantized.pixel(i - 1,j + 1).r + errorR * beta);
+            quantized.pixel(i - 1,j + 1).g = truncate(quantized.pixel(i - 1,j + 1).g + errorG * beta);
+            quantized.pixel(i - 1,j + 1).b = truncate(quantized.pixel(i - 1,j + 1).b + errorB * beta);
+          }
+
+          quantized.pixel(i, j + 1).r = truncate(quantized.pixel(i,j + 1).r + errorR * gamma);
+          quantized.pixel(i, j + 1).g = truncate(quantized.pixel(i,j + 1).g + errorG * gamma);
+          quantized.pixel(i, j + 1).b = truncate(quantized.pixel(i,j + 1).b + errorB * gamma);
+        }
+
+        if (i + 1 != this->width() && j + 1 != this->height()) {
+          quantized.pixel(i + 1,j + 1).r = truncate(quantized.pixel(i + 1,j + 1).r + errorR * delta);
+          quantized.pixel(i + 1,j + 1).g = truncate(quantized.pixel(i + 1,j + 1).g + errorG * delta);
+          quantized.pixel(i + 1,j + 1).b = truncate(quantized.pixel(i + 1,j + 1).b + errorB * delta);
+        }
+
+      }
+    }
 	return 1;
 }
 

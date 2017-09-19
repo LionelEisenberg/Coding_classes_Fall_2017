@@ -1,16 +1,21 @@
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out tests/noise1.bmp --noisify 0
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out tests/noise2.bmp --noisify .5
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out tests/noise3.bmp --noisify 1
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out tests/bright1.bmp --brighten .5
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out tests/bright2.bmp --brighten 2
-./Bin/Linux/Assignment1 --contrast 0.5 --in shrek.bmp --out tests/co1.bmp
-./Bin/Linux/Assignment1 --contrast 1 --in shrek.bmp --out tests/co2.bmp
-./Bin/Linux/Assignment1 --contrast 2 --in shrek.bmp --out tests/co3.bmp
-./Bin/Linux/Assignment1 --saturate 0.5 --in shrek.bmp --out tests/sa1.bmp
-./Bin/Linux/Assignment1 --saturate 1 --in shrek.bmp --out tests/sa2.bmp
-./Bin/Linux/Assignment1 --saturate 2 --in shrek.bmp --out tests/sa3.bmp
-./Bin/Linux/Assignment1 --gray --in yoda.bmp --out tests/gray.bmp
-./Bin/Linux/Assignment1 --quantize 1 --in ramp.bmp --out tests/qu1.bmp
-./Bin/Linux/Assignment1 --quantize 2 --in ramp.bmp --out tests/qu2.bmp
-./Bin/Linux/Assignment1 --quantize 3 --in ramp.bmp --out tests/qu3.bmp
-./Bin/Linux/Assignment1 --blur3x3 --in sully.bmp --out tests/blur.bmp
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/noise1.bmp --noisify 0
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/noise2.bmp --noisify .5
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/noise3.bmp --noisify 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/bright1.bmp --brighten .5
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/bright2.bmp --brighten 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast.5.bmp --contrast .5
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast1.bmp --contrast 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast2.bmp --contrast 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/gray.bmp --grey
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat.5.bmp --saturate .5
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat1.bmp --saturate 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat2.bmp --saturate 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant1.bmp --quantize 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant2.bmp --quantize 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant4.bmp --quantize 4
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither1.bmp --oDither2x2 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither2.bmp --oDither2x2 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither4.bmp --oDither2x2 4
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither1.bmp --fsDither 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither2.bmp --fsDither 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither4.bmp --fsDither 4
