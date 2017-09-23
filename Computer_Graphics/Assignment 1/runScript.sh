@@ -6,7 +6,6 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast.5.bmp --contrast .5
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast1.bmp --contrast 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/contrast2.bmp --contrast 2
-./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/gray.bmp --grey
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat.5.bmp --saturate .5
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat1.bmp --saturate 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/sat2.bmp --saturate 2
@@ -19,3 +18,7 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither1.bmp --fsDither 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither2.bmp --fsDither 2
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither4.bmp --fsDither 4
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/crop.bmp --crop 100 100 50 50
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest.7.bmp --scaleNearest .7
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.bmp --scaleNearest 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.3.bmp --scaleNearest 1.3

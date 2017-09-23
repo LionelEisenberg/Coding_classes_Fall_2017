@@ -295,7 +295,13 @@ int Image32::EdgeDetect3X3(Image32& outputImage) const
 
 int Image32::ScaleNearest(const float& scaleFactor,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      outputImage.pixel(i,j) = NearestSample(i / scaleFactor, j / scaleFactor);
+    }
+  }
+	return 1;
 }
 
 int Image32::ScaleBilinear(const float& scaleFactor,Image32& outputImage) const
@@ -349,14 +355,23 @@ int Image32::FunFilter(Image32& outputImage) const
 }
 int Image32::Crop(const int& x1,const int& y1,const int& x2,const int& y2,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(x2-x1, y2-y1);
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      outputImage.pixel(i,j) = this->pixel(i + x1, j + y1);
+    }
+  }
+	return 1;
 }
 
 
 Pixel32 Image32::NearestSample(const float& x,const float& y) const
 {
-	return Pixel32();
+  int ix = floor(x + 0.5);
+  int iy = floor(y + 0.5);
+  return this->pixel(ix, iy);
 }
+
 Pixel32 Image32::BilinearSample(const float& x,const float& y) const
 {
 	return Pixel32();
