@@ -200,8 +200,8 @@ int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
       quantized.pixel(i,j) = this->pixel(i,j);
     }
   }
-  for (int i = 0; i < this->width(); i++) {
-    for (int j = 0; j < this->height(); j++) {
+  for (int j = 0; j < this->height(); j++) {
+    for (int i = 0; i < this->width(); i++) {
         outputImage.pixel(i,j).r = truncate(floor((quantized.pixel(i,j).r / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
         outputImage.pixel(i,j).g = truncate(floor((quantized.pixel(i,j).g / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
         outputImage.pixel(i,j).b = truncate(floor((quantized.pixel(i,j).b / 255.0) * pow(2, bits)) / (pow(2, bits)-1) * 255.0);
@@ -211,6 +211,11 @@ int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
         float errorB = quantized.pixel(i,j).b - outputImage.pixel(i,j).b;
 
         if (i + 1 != this->width()) {
+          if (j + 1 != this->height()) {
+            quantized.pixel(i + 1,j + 1).r = truncate(quantized.pixel(i + 1,j + 1).r + errorR * delta);
+            quantized.pixel(i + 1,j + 1).g = truncate(quantized.pixel(i + 1,j + 1).g + errorG * delta);
+            quantized.pixel(i + 1,j + 1).b = truncate(quantized.pixel(i + 1,j + 1).b + errorB * delta);
+          }
           quantized.pixel(i + 1,j).r = truncate(quantized.pixel(i + 1,j).r + errorR * alpha);
           quantized.pixel(i + 1,j).g = truncate(quantized.pixel(i + 1,j).g + errorG * alpha);
           quantized.pixel(i + 1,j).b = truncate(quantized.pixel(i + 1,j).b + errorB * alpha);
@@ -227,13 +232,6 @@ int Image32::FloydSteinbergDither(const int& bits,Image32& outputImage) const
           quantized.pixel(i, j + 1).g = truncate(quantized.pixel(i,j + 1).g + errorG * gamma);
           quantized.pixel(i, j + 1).b = truncate(quantized.pixel(i,j + 1).b + errorB * gamma);
         }
-
-        if (i + 1 != this->width() && j + 1 != this->height()) {
-          quantized.pixel(i + 1,j + 1).r = truncate(quantized.pixel(i + 1,j + 1).r + errorR * delta);
-          quantized.pixel(i + 1,j + 1).g = truncate(quantized.pixel(i + 1,j + 1).g + errorG * delta);
-          quantized.pixel(i + 1,j + 1).b = truncate(quantized.pixel(i + 1,j + 1).b + errorB * delta);
-        }
-
       }
     }
 	return 1;
