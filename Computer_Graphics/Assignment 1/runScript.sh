@@ -22,3 +22,6 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest.7.bmp --scaleNearest .7
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.bmp --scaleNearest 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.3.bmp --scaleNearest 1.3
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear.7.bmp --scaleBilinear  .7
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear1.bmp --scaleBilinear  1
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear1.3.bmp --scaleBilinear  1.3

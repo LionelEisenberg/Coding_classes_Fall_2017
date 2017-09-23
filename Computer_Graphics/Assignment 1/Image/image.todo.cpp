@@ -298,7 +298,7 @@ int Image32::ScaleNearest(const float& scaleFactor,Image32& outputImage) const
   outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
   for (int i = 0; i < outputImage.width(); i++) {
     for (int j = 0; j < outputImage.height(); j++) {
-      outputImage.pixel(i,j) = NearestSample(i / scaleFactor, j / scaleFactor);
+      outputImage.pixel(i,j) = this->NearestSample(i / scaleFactor, j / scaleFactor);
     }
   }
 	return 1;
@@ -306,11 +306,25 @@ int Image32::ScaleNearest(const float& scaleFactor,Image32& outputImage) const
 
 int Image32::ScaleBilinear(const float& scaleFactor,Image32& outputImage) const
 {
-	return 0;
+  outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      outputImage.pixel(i,j) = this->BilinearSample(i / scaleFactor, j / scaleFactor);
+    }
+  }
+	return 1;
 }
 
 int Image32::ScaleGaussian(const float& scaleFactor,Image32& outputImage) const
 {
+  const float variance = 1.0;
+  const int radius = 3;
+  outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      outputImage.pixel(i,j) = this->BilinearSample(i / scaleFactor, j / scaleFactor, variance, radius);
+    }
+  }
 	return 0;
 }
 
@@ -374,8 +388,43 @@ Pixel32 Image32::NearestSample(const float& x,const float& y) const
 
 Pixel32 Image32::BilinearSample(const float& x,const float& y) const
 {
-	return Pixel32();
+  int x1, x2, y1, y2;
+  float dy, dx;
+  x1 = floor(x);
+  y1 = floor(y);
+  x2 = x1 + 1;
+  y2 = y1 + 1;
+  dx = x - x1;
+  dy = y - y1;
+  Pixel32 bottomInterpolation, topInterpollation, sourcePixel;
+  if (x2 >= this->width()) {
+    bottomInterpolation.r = this->pixel(x1,y1).r * (1 - dx);
+    bottomInterpolation.g = this->pixel(x1,y1).g * (1 - dx);
+    bottomInterpolation.b = this->pixel(x1,y1).b * (1 - dx);
+
+    if(y2 < this->height()) {
+      topInterpollation.r = this->pixel(x1,y2).r * (1 - dx);
+      topInterpollation.g = this->pixel(x1,y2).g * (1 - dx);
+      topInterpollation.b = this->pixel(x1,y2).b * (1 - dx);
+    }
+  } else {
+    bottomInterpolation.r = this->pixel(x1,y1).r * (1 - dx) + this->pixel(x2,y1).r * dx;
+    bottomInterpolation.g = this->pixel(x1,y1).g * (1 - dx) + this->pixel(x2,y1).g * dx;
+    bottomInterpolation.b = this->pixel(x1,y1).b * (1 - dx) + this->pixel(x2,y1).b * dx;
+
+    if(y2 < this->height()) {
+      topInterpollation.r = this->pixel(x1,y2).r * (1 - dx) + this->pixel(x2,y2).r * dx;
+      topInterpollation.g = this->pixel(x1,y2).g * (1 - dx) + this->pixel(x2,y2).g * dx;
+      topInterpollation.b = this->pixel(x1,y2).b * (1 - dx) + this->pixel(x2,y2).b * dx;
+    }
+  }
+  sourcePixel.r = bottomInterpolation.r * (1 - dy) + topInterpollation.r * dy;
+  sourcePixel.g = bottomInterpolation.g * (1 - dy) + topInterpollation.g * dy;
+  sourcePixel.b = bottomInterpolation.b * (1 - dy) + topInterpollation.b * dy;
+
+	return sourcePixel;
 }
+
 Pixel32 Image32::GaussianSample(const float& x,const float& y,const float& variance,const float& radius) const
 {
 	return Pixel32();
