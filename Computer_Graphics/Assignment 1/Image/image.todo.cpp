@@ -318,19 +318,27 @@ int Image32::ScaleBilinear(const float& scaleFactor,Image32& outputImage) const
 int Image32::ScaleGaussian(const float& scaleFactor,Image32& outputImage) const
 {
   const float variance = 1.0;
-  const int radius = 3;
+  const int radius = 1;
   outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
   for (int i = 0; i < outputImage.width(); i++) {
     for (int j = 0; j < outputImage.height(); j++) {
-      outputImage.pixel(i,j) = this->BilinearSample(i / scaleFactor, j / scaleFactor, variance, radius);
+      outputImage.pixel(i,j) = this->GaussianSample(i / scaleFactor, j / scaleFactor, variance, radius);
     }
   }
-	return 0;
+	return 1;
 }
 
 int Image32::RotateNearest(const float& angle,Image32& outputImage) const
 {
-	return 0;
+  float diagonal = sqrt(pow(this->width(), 2) + pow(this->height(), 2));
+  outputImage.setSize(diagonal, diagonal);
+  float radians = angle * (PI / 180);
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      outputImage.pixel(i,j) = this->NearestSample(i * cos(radians) - j * sin(radians), i * sin(radians) + j * cos(radians));
+    }
+  }
+	return 1;
 }
 
 int Image32::RotateBilinear(const float& angle,Image32& outputImage) const
@@ -383,6 +391,10 @@ Pixel32 Image32::NearestSample(const float& x,const float& y) const
 {
   int ix = floor(x + 0.5);
   int iy = floor(y + 0.5);
+  if (ix < 0 || ix >= this->width() || iy < 0 || iy >= this->height()) {
+    Pixel32 dark;
+    return dark;
+  }
   return this->pixel(ix, iy);
 }
 
@@ -418,14 +430,43 @@ Pixel32 Image32::BilinearSample(const float& x,const float& y) const
       topInterpollation.b = this->pixel(x1,y2).b * (1 - dx) + this->pixel(x2,y2).b * dx;
     }
   }
-  sourcePixel.r = bottomInterpolation.r * (1 - dy) + topInterpollation.r * dy;
-  sourcePixel.g = bottomInterpolation.g * (1 - dy) + topInterpollation.g * dy;
-  sourcePixel.b = bottomInterpolation.b * (1 - dy) + topInterpollation.b * dy;
+  sourcePixel.r = truncate(bottomInterpolation.r * (1 - dy) + topInterpollation.r * dy);
+  sourcePixel.g = truncate(bottomInterpolation.g * (1 - dy) + topInterpollation.g * dy);
+  sourcePixel.b = truncate(bottomInterpolation.b * (1 - dy) + topInterpollation.b * dy);
 
 	return sourcePixel;
 }
 
 Pixel32 Image32::GaussianSample(const float& x,const float& y,const float& variance,const float& radius) const
 {
-	return Pixel32();
+  int xLowerBound = floor(x) - radius;
+  int yLowerBound = floor(y) - radius;
+  int xUpperBound = ceil(x) + radius;
+  int yUpperBound = ceil(y) + radius;
+  Pixel32 sampledPixel;
+
+  float normalize = 0.0;
+  float mask[xUpperBound - xLowerBound][yUpperBound - yLowerBound];
+
+  for (int i = xLowerBound; i < xUpperBound; i++) {
+    for (int j = yLowerBound; j < yUpperBound; j++) {
+        float di = abs(x - i);
+        float dj = abs(y - j);
+        mask[i - xLowerBound][j - yLowerBound] = exp(-(pow(di, 2) + pow(dj, 2))/(2*pow(variance, 2)));
+        normalize += mask[i - xLowerBound][j - yLowerBound];
+    }
+  }
+
+  for (int i = xLowerBound; i < xUpperBound; i++) {
+    for (int j = yLowerBound; j < yUpperBound; j++) {
+      if (i < 0 || i >= this->width() || j < 0 || j >= this->height()) {
+        continue;
+      } else {
+        sampledPixel.r = truncate(sampledPixel.r + this->pixel(i,j).r * mask[i - xLowerBound][j - yLowerBound] / normalize);
+        sampledPixel.g = truncate(sampledPixel.g + this->pixel(i,j).g * mask[i - xLowerBound][j - yLowerBound] / normalize);
+        sampledPixel.b = truncate(sampledPixel.b + this->pixel(i,j).b * mask[i - xLowerBound][j - yLowerBound] / normalize);
+      }
+    }
+  }
+	return sampledPixel;
 }

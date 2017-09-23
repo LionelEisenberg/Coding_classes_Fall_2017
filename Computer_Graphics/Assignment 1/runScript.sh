@@ -25,3 +25,7 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear.7.bmp --scaleBilinear  .7
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear1.bmp --scaleBilinear  1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleBilinear1.3.bmp --scaleBilinear  1.3
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleGaussian.7.bmp --scaleGaussian  .7
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleGaussian1.bmp --scaleGaussian  1
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleGaussian1.3.bmp --scaleGaussian  1.3
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/rotateNearest30.bmp --rotateNearest  30
