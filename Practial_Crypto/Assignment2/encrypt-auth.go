@@ -39,12 +39,11 @@ func checkForError(err error) {
 func main() {
   checkArgs();
   checkKey();
-  keyAndMAC, err := hex.DecodeString(os.Args[3])
+  keyAndMAC, err := hex.DecodeString(os.Args[3]);
   checkForError(err);
   key := keyAndMAC[0:16];
-  MAC := keyAndMAC[16:32]
+  MAC := keyAndMAC[16:32];
 
-
-  fmt.Println(keyAndMAC);
+  fmt.Println(string(keyAndMAC));
   fmt.Println(key, "\n", MAC);
 }
