@@ -1,6 +1,7 @@
 #include "image.h"
 #include <stdlib.h>
 #include <math.h>
+#include <algorithm>
 
 ////////////////////////////
 // Image processing stuff //
@@ -277,7 +278,9 @@ int Image32::EdgeDetect3X3(Image32& outputImage) const
       for (int k = i - 1; k <= i + 1; k++) {
         for (int l = j - 1; l <= j + 1; l++) {
           if (k <= 0|| k >= this->width() || l <= 0 || l >= this->height()) {
-            continue;
+            sumR += 128/(-1/8.0);
+            sumB += 128/(-1/8.0);
+            sumG += 128/(-1/8.0);
           } else {
             sumR += this->pixel(k,l).r * edgeMatrix[k-(i-1)][l-(j-1)];
             sumB += this->pixel(k,l).b * edgeMatrix[k-(i-1)][l-(j-1)];
@@ -328,22 +331,67 @@ int Image32::ScaleGaussian(const float& scaleFactor,Image32& outputImage) const
 	return 1;
 }
 
+
+
 int Image32::RotateNearest(const float& angle,Image32& outputImage) const
 {
-  float diagonal = sqrt(pow(this->width(), 2) + pow(this->height(), 2));
-  outputImage.setSize(diagonal, diagonal);
-  float radians = angle * (PI / 180);
-  for (int i = 0; i < outputImage.width(); i++) {
-    for (int j = 0; j < outputImage.height(); j++) {
-      outputImage.pixel(i,j) = this->NearestSample(i * cos(radians) - j * sin(radians), i * sin(radians) + j * cos(radians));
-    }
+  int height = this->height(); int width = this->width();
+  float radians = - angle * (PI / 180);
+  double x0 = 0;
+  double y0 = 0;
+  double x1 = width * cos(radians);
+  double y1 = width * sin(radians);
+  double x2 = width * cos(radians) - height * sin(radians);
+  double y2 = height * cos(radians) + width * sin(radians);
+  double x3 = height * sin(radians) * -1;
+  double y3 = height * cos(radians);
+  double Xarr[4] = {x0, x1, x2, x3};
+  double Yarr[4] = {y0, y1, y2, y3};
+  double Xminimum = *std::min_element(Xarr, Xarr + 4);
+  double Yminimum = *std::min_element(Yarr, Yarr + 4);
+
+  // Formula taken from: https://stackoverflow.com/questions/3231176/how-to-get-size-of-a-rotated-rectangle
+  int newHeight = abs(width * sin(radians)) + abs(height * cos(radians)) + 1;
+  int newWidth = abs(width * cos(radians)) + abs(height * sin(radians)) + 1;
+  outputImage.setSize(newWidth, newHeight);
+
+  for (int j = 0; j < outputImage.height(); j++) {
+    for (int i = 0; i < outputImage.width(); i++) {
+			outputImage(i, j) = this->NearestSample((i + Xminimum) * cos(radians) + (j + Yminimum) * sin(radians), (j + Yminimum) * cos(radians) - (i + Xminimum) * sin(radians));
+		}
   }
 	return 1;
 }
 
 int Image32::RotateBilinear(const float& angle,Image32& outputImage) const
 {
-	return 0;
+  int height = this->height(); int width = this->width();
+  float radians = - angle * (PI / 180);
+  double x0 = 0;
+  double y0 = 0;
+  double x1 = width * cos(radians);
+  double y1 = width * sin(radians);
+  double x2 = width * cos(radians) - height * sin(radians);
+  double y2 = height * cos(radians) + width * sin(radians);
+  double x3 = height * sin(radians) * -1;
+  double y3 = height * cos(radians);
+  double Xarr[4] = {x0, x1, x2, x3};
+  double Yarr[4] = {y0, y1, y2, y3};
+  double Xminimum = *std::min_element(Xarr, Xarr + 4);
+  double Yminimum = *std::min_element(Yarr, Yarr + 4);
+
+  // Formula taken from: https://stackoverflow.com/questions/3231176/how-to-get-size-of-a-rotated-rectangle
+  int newHeight = abs(width * sin(radians)) + abs(height * cos(radians)) + 1;
+  int newWidth = abs(width * cos(radians)) + abs(height * sin(radians)) + 1;
+  outputImage.setSize(newWidth, newHeight);
+
+  for (int j = 0; j < outputImage.height(); j++) {
+    for (int i = 0; i < outputImage.width(); i++) {
+      // printf("(%d, %d)\n", );
+			outputImage(i, j) = this->BilinearSample((i + Xminimum) * cos(radians) + (j + Yminimum) * sin(radians), (j + Yminimum) * cos(radians) - (i + Xminimum) * sin(radians));
+		}
+  }
+	return 1;
 }
 
 int Image32::RotateGaussian(const float& angle,Image32& outputImage) const
@@ -354,6 +402,11 @@ int Image32::RotateGaussian(const float& angle,Image32& outputImage) const
 
 int Image32::SetAlpha(const Image32& matte)
 {
+  for (int j = 0; j < matte.height(); j++) {
+    for (int i = 0; i < matte.width(); i++) {
+        printf("%d\n", matte.pixel(i,j).a);
+    }
+  }
 	return 0;
 }
 
@@ -409,6 +462,13 @@ Pixel32 Image32::BilinearSample(const float& x,const float& y) const
   dx = x - x1;
   dy = y - y1;
   Pixel32 bottomInterpolation, topInterpollation, sourcePixel;
+
+  if (x >= this->width() || x < 0 || y >= this->width() || y < 0) {
+    return Pixel32();
+  }
+
+  printf("hi");
+
   if (x2 >= this->width()) {
     bottomInterpolation.r = this->pixel(x1,y1).r * (1 - dx);
     bottomInterpolation.g = this->pixel(x1,y1).g * (1 - dx);
@@ -439,6 +499,10 @@ Pixel32 Image32::BilinearSample(const float& x,const float& y) const
 
 Pixel32 Image32::GaussianSample(const float& x,const float& y,const float& variance,const float& radius) const
 {
+  if (x >= this->width() || x < 0 || y >= this->width() || y < 0) {
+    return Pixel32();
+  }
+
   int xLowerBound = floor(x) - radius;
   int yLowerBound = floor(y) - radius;
   int xUpperBound = ceil(x) + radius;

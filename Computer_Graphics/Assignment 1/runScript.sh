@@ -12,13 +12,13 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant1.bmp --quantize 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant2.bmp --quantize 2
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/quant4.bmp --quantize 4
-./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither1.bmp --oDither2x2 1
-./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither2.bmp --oDither2x2 2
-./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/oDither4.bmp --oDither2x2 4
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/rDither1.bmp --oDither2x2 1
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/rDither2.bmp --oDither2x2 2
+./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/rDither4.bmp --oDither2x2 4
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither1.bmp --fsDither 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither2.bmp --fsDither 2
 ./Bin/Linux/Assignment1 --in Test\ Images/input/ramp.bmp --out Test\ Images/output/fsDither4.bmp --fsDither 4
-./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/crop.bmp --crop 100 100 50 50
+./Bin/Linux/Assignment1 --in Test\ Images/input/shrek.bmp --out Test\ Images/output/crop.bmp --crop 50 50 100 100
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest.7.bmp --scaleNearest .7
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.bmp --scaleNearest 1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleNearest1.3.bmp --scaleNearest 1.3
@@ -29,3 +29,5 @@
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleGaussian1.bmp --scaleGaussian  1
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/scaleGaussian1.3.bmp --scaleGaussian  1.3
 ./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/rotateNearest30.bmp --rotateNearest  30
+./Bin/Linux/Assignment1 --in Test\ Images/input/yoda.bmp --out Test\ Images/output/rotateNearesty90.bmp --rotateNearest  90
+./Bin/Linux/Assignment1 --in Test\ Images/input/stripe.2.bmp --out Test\ Images/output/rotateBilinear30.bmp --rotateBilinear 30
