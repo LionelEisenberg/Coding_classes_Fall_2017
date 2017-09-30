@@ -412,6 +412,7 @@ int Image32::SetAlpha(const Image32& matte)
 
 int Image32::Composite(const Image32& overlay,Image32& outputImage) const
 {
+  outputImage.setSize(this->width(), this->height());
 	return 0;
 }
 
@@ -466,8 +467,6 @@ Pixel32 Image32::BilinearSample(const float& x,const float& y) const
   if (x >= this->width() || x < 0 || y >= this->width() || y < 0) {
     return Pixel32();
   }
-
-  printf("hi");
 
   if (x2 >= this->width()) {
     bottomInterpolation.r = this->pixel(x1,y1).r * (1 - dx);
