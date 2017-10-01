@@ -103,7 +103,7 @@ int main(int argc,char* argv[]){
 	}
 	printf("Input dimensions: %dx%d\n",inImage.width(),inImage.height());
 
-	// Filter the image
+	// Filter the imageF
 	if(RandomNoise.set){
 		if(!inImage.AddRandomNoise(RandomNoise.value,outImage)){
 			printf("Could not add noise to the image\n");

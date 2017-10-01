@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lionel Eisenberg Submission for Assignment1</title>
+    <style media="screen">
+      body {
+        line-height: 50%;
+      }
+      img {
+        height: auto;
+        width: auto;
+        max-width: 300px;
+        max-height: 300px;
+      }
+      h1, h2 {
+        text-align: center;
+      }
+      table tr:nth-child(2) td {
+        text-align: center;
+        font-size: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Submission for Lionel Eisenberg, leisenb5</h1>
+    <h2>Assignment1, Fall 2017, Computer Graphics</h2>
+    <p>Compiler/Environment: Unbuntu Bash on windows</p>
+    <p>Number of late days: 0</p>
+    <p><b><i>DISCLAIMER: </i></b>In order to make and your life easier, I wrote a couple bash scripts to make GIFs and Create all output images
+    The script <code>runScript</code> will run every method to get output images.</p>
+    <p>If the scripts do not compile, please run: <code>dos2unix #script_name#</code> in command line.</p>
+    <hr>
+    <ul>
+      <li>
+        <h3>Art contest Submission: Macron in a swirl</h3>
+        <p>swirl GIF of Emmanuel Macon, my current president</p>
+        <p>Images are produced by running the script <code>./macronGifScript</code>the images were then turned into a GIF with <a href="http://gifmaker.me/">GifMaker</a></p>
+        <p>The <a href="#swirlStrength">swirlStrength</a> factor need to be changed in the function from 1.0 to 0.1 in order for the GIF to be recreated</p>
+        <img src="leisenb5_HTML/TEST_IMAGES/gifOutput/Macron.gif">
+        <img src="leisenb5_HTML/TEST_IMAGES/gifOutput/macron8.jpg">
+      </li>
+
+      <li>
+        <h3>GIF Submission: rotation</h3>
+        <p>GIF rotates 5 degrees for one full rotation</p>
+        <p>The images are produced by running the script <code>./rotateGifScript</code> the images were then turned into a GIF with <a href="http://gifmaker.me/">GifMaker</a></p>
+        <img src="leisenb5_HTML/TEST_IMAGES/gifOutput/rotate.gif">
+      </li>
+      <li id="swirlStrength"><h3>Fun filter: swirl</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/yoda.bmp --out leisenb5_HTML/TEST_IMAGES/output/fun.bmp --fun</code></p>
+        <p>Added a <i><b>swirlStrength</b></i> factor to change the strenght of the swirl</p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/yoda.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/fun.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--fun</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>AddRandomNoise</h3>
+        <p>Uses helper function RandomFloat to add random noise to image</p>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/yoda.bmp --out leisenb5_HTML/TEST_IMAGES/output/noise1.bmp --noisify 0</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/yoda.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/noise1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/noise2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/noise3.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--noisify 0</p></td>
+            <td><p>--noisify 0.5</p></td>
+            <td><p>--noisify 1  </p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Brighten</h3>
+        <p>This function, like many others uses a helper method that limits pixels from having > 255 or < 0 values</p>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/yoda.bmp --out leisenb5_HTML/TEST_IMAGES/output/bright1.bmp --brighten .5</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/yoda.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/bright1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/yoda.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/bright2.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--brighten .5</p></td>
+            <td><p>--brighten 1</p></td>
+            <td><p>--brighten 2</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Luminance</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/shrek.bmp --out leisenb5_HTML/TEST_IMAGES/output/contrast.5.bmp --contrast .5</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/shrek.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/contrast.5.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/contrast1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/contrast2.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--contrast .5</p></td>
+            <td><p>--contrast 1</p></td>
+            <td><p>--contrast 2</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Contrast</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/shrek.bmp --out leisenb5_HTML/TEST_IMAGES/output/sat.5.bmp --saturate .5</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/shrek.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/sat.5.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/sat1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/sat2.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--saturate .5</p></td>
+            <td><p>--saturate 1</p></td>
+            <td><p>--saturate 2</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Edge detection</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/sully.bmp --out leisenb5_HTML/TEST_IMAGES/output/edges.bmp --edges3x3</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/sully.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/edges.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--edges3x3</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Blur</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/sully.bmp --out leisenb5_HTML/TEST_IMAGES/output/blur.bmp --blur3x3</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/sully.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/blur.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--blur3x3</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Blur</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/shrek.bmp --out leisenb5_HTML/TEST_IMAGES/output/gray.bmp --gray</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/shrek.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/gray.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--gray</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Quantize</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/ramp.bmp --out leisenb5_HTML/TEST_IMAGES/output/quant1.bmp --quantize 1</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/ramp.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/quant1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/quant2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/quant4.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--quantize 1</p></td>
+            <td><p>--quantize 2</p></td>
+            <td><p>--quantize 4</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>rDither</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/ramp.bmp --out leisenb5_HTML/TEST_IMAGES/output/rDither1.bmp --rDither 1</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/ramp.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rDither1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rDither2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rDither4.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--rDither 1</p></td>
+            <td><p>--rDither 2</p></td>
+            <td><p>--rDither 4</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>oDthier2x2</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/ramp.bmp --out leisenb5_HTML/TEST_IMAGES/output/oDither1.bmp --oDither2x2 1</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/ramp.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/oDither1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/oDither2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/oDither4.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--oDither2x2 1</p></td>
+            <td><p>--oDither2x2 2</p></td>
+            <td><p>--oDither2x2 4</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>fsDither</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/ramp.bmp --out leisenb5_HTML/TEST_IMAGES/output/fsDither1.bmp --fsDither 1</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/ramp.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/fsDither1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/fsDither2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/fsDither4.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--fsDither 1</p></td>
+            <td><p>--fsDither 2</p></td>
+            <td><p>--fsDither 4</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>Crop</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/shrek.bmp --out leisenb5_HTML/TEST_IMAGES/output/crop1.bmp --crop 50 50 100 100</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/ramp.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/crop1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/crop2.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/crop3.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--crop 50 50 100 100</p></td>
+            <td><p>--crop 0 0 600 800</p></td>
+            <td><p>--crop 0 200 200 300</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>scaleNearest</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/scaleNearest.7.bmp --scaleNearest .7</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleNearest.7.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleNearest1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleNearest1.3.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--scaleNearest .7</p></td>
+            <td><p>--scaleNearest 1 </p></td>
+            <td><p>--scaleNearest 1.3</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>scaleBilinear</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/scaleBilinear.7.bmp --scaleBilinear .7</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleBilinear.7.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleBilinear1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleBilinear1.3.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--scaleBilinear .7</p></td>
+            <td><p>--scaleBilinear 1 </p></td>
+            <td><p>--scaleBilinear 1.3</p></td>
+          </tr>
+        </table>
+      </li>
+      <li><h3>scaleGaussian</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/scaleGaussian.7.bmp --scaleGaussian .7</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleGaussian.7.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleGaussian1.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/scaleGaussian1.3.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--scaleGaussian .7</p></td>
+            <td><p>--scaleGaussian 1 </p></td>
+            <td><p>--scaleGaussian 1.3</p></td>
+          </tr>
+        </table>
+      </li>
+      <li>
+        <h3>rotate Nearest, Bilinear, Gaussian</h3>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/rotateNearest30.bmp --rotateNearest  30</code></p>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/rotateBilinear30.bmp --rotateBilinear  30</code></p>
+        <p>Run with command: <code>./Bin/Linux/Assignment1 --in leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp --out leisenb5_HTML/TEST_IMAGES/output/rotateGaussian30.bmp --rotateGaussian  30</code></p>
+        <table border=".5">
+          <tr>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/input/stripe.2.bmp"></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rotateNearest30.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rotateBilinear30.bmp" alt=""></td>
+            <td><img src="leisenb5_HTML/TEST_IMAGES/output/rotateGaussian30.bmp" alt=""></td>
+          </tr>
+          <tr>
+            <td><p>Original</p></td>
+            <td><p>--rotateNearest 30</p></td>
+            <td><p>--rotateBilinear 30</p></td>
+            <td><p>--rotateGaussian 30</p></td>
+          </tr>
+        </table>
+      </li>
+    </ul>
+    <hr>
+  </body>
+</html>

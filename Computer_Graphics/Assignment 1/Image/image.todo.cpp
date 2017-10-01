@@ -37,6 +37,7 @@ int truncate(float value) {
   return value;
 }
 
+//adds a random float between -255 and 255 scaled with the noise input to the image.
 int Image32::AddRandomNoise(const float& noise,Image32& outputImage) const
 {
 		outputImage.setSize(this->width(), this->height());
@@ -320,7 +321,7 @@ int Image32::ScaleBilinear(const float& scaleFactor,Image32& outputImage) const
 
 int Image32::ScaleGaussian(const float& scaleFactor,Image32& outputImage) const
 {
-  const float variance = 1.0;
+  const float variance = 1.0/scaleFactor;
   const int radius = 1;
   outputImage.setSize(this->width() * scaleFactor, this->height() * scaleFactor);
   for (int i = 0; i < outputImage.width(); i++) {
@@ -387,7 +388,6 @@ int Image32::RotateBilinear(const float& angle,Image32& outputImage) const
 
   for (int j = 0; j < outputImage.height(); j++) {
     for (int i = 0; i < outputImage.width(); i++) {
-      // printf("(%d, %d)\n", );
 			outputImage(i, j) = this->BilinearSample((i + Xminimum) * cos(radians) + (j + Yminimum) * sin(radians), (j + Yminimum) * cos(radians) - (i + Xminimum) * sin(radians));
 		}
   }
@@ -396,24 +396,63 @@ int Image32::RotateBilinear(const float& angle,Image32& outputImage) const
 
 int Image32::RotateGaussian(const float& angle,Image32& outputImage) const
 {
-	return 0;
+  const float variance = 1.0;
+  const int radius = 1;
+  int height = this->height(); int width = this->width();
+  float radians = - angle * (PI / 180);
+  double x0 = 0;
+  double y0 = 0;
+  double x1 = width * cos(radians);
+  double y1 = width * sin(radians);
+  double x2 = width * cos(radians) - height * sin(radians);
+  double y2 = height * cos(radians) + width * sin(radians);
+  double x3 = height * sin(radians) * -1;
+  double y3 = height * cos(radians);
+  double Xarr[4] = {x0, x1, x2, x3};
+  double Yarr[4] = {y0, y1, y2, y3};
+  double Xminimum = *std::min_element(Xarr, Xarr + 4);
+  double Yminimum = *std::min_element(Yarr, Yarr + 4);
+
+  // Formula taken from: https://stackoverflow.com/questions/3231176/how-to-get-size-of-a-rotated-rectangle
+  int newHeight = abs(width * sin(radians)) + abs(height * cos(radians)) + 1;
+  int newWidth = abs(width * cos(radians)) + abs(height * sin(radians)) + 1;
+  outputImage.setSize(newWidth, newHeight);
+
+  for (int j = 0; j < outputImage.height(); j++) {
+    for (int i = 0; i < outputImage.width(); i++) {
+			outputImage(i, j) = this->GaussianSample((i + Xminimum) * cos(radians) + (j + Yminimum) * sin(radians), (j + Yminimum) * cos(radians) - (i + Xminimum) * sin(radians), variance, radius);
+		}
+  }
+	return 1;
 }
 
 
 int Image32::SetAlpha(const Image32& matte)
 {
-  for (int j = 0; j < matte.height(); j++) {
-    for (int i = 0; i < matte.width(); i++) {
-        printf("%d\n", matte.pixel(i,j).a);
+  for (int i = 0; i < matte.width(); i++) {
+    for (int j = 0; j < matte.height(); j++) {
+      if (matte.pixel(i,j).r >= 220 && matte.pixel(i,j).g <= 35 && matte.pixel(i,j).b <= 35) {
+        this->pixel(i,j).a = 0;
+      } else {
+        this->pixel(i,j).a = 1;
+      }
     }
   }
-	return 0;
 }
 
 int Image32::Composite(const Image32& overlay,Image32& outputImage) const
 {
   outputImage.setSize(this->width(), this->height());
-	return 0;
+  for (int i = 0; i < this->width(); i++) {
+    for (int j = 0; j < this->height(); j++) {
+      if (overlay.pixel(i,j).a == 1) {
+        outputImage.pixel(i,j) = overlay.pixel(i,j);
+      } else {
+        outputImage.pixel(i,j) = this->pixel(i,j);
+      }
+    }
+  }
+	return 1;
 }
 
 int Image32::CrossDissolve(const Image32& source,const Image32& destination,const float& blendWeight,Image32& ouputImage)
@@ -425,16 +464,36 @@ int Image32::Warp(const OrientedLineSegmentPairs& olsp,Image32& outputImage) con
 	return 0;
 }
 
+//algorithm take from http://introcs.cs.princeton.edu
 int Image32::FunFilter(Image32& outputImage) const
 {
-	return 0;
+  float swirlStrength = 1.0;
+  outputImage.setSize(this->width(), this->height());
+  int x0 = outputImage.width() / 2;
+  int y0 = outputImage.height() / 2;
+  for (int i = 0; i < outputImage.width(); i++) {
+    for (int j = 0; j < outputImage.height(); j++) {
+      float distx = i - x0;
+      float disty = j - y0;
+      float r = sqrt(pow(distx, 2) + pow(disty, 2));
+      float rangle = PI / 256 * r * swirlStrength;
+      outputImage.pixel(i,j) = this->NearestSample(distx * cos(rangle) - disty * sin(rangle) + x0, distx * sin(rangle) + disty * cos(rangle) + y0);
+    }
+  }
+	return 1;
 }
+
 int Image32::Crop(const int& x1,const int& y1,const int& x2,const int& y2,Image32& outputImage) const
 {
   outputImage.setSize(x2-x1, y2-y1);
   for (int i = 0; i < outputImage.width(); i++) {
     for (int j = 0; j < outputImage.height(); j++) {
-      outputImage.pixel(i,j) = this->pixel(i + x1, j + y1);
+      if (i + x1 >= this->width() || i + x1 < 0 || j + y1 >= this->height() || j + y1 < 0) {
+        Pixel32 dark;
+        outputImage.pixel(i,j) = dark;
+      } else {
+        outputImage.pixel(i,j) = this->pixel(i + x1, j + y1);
+      }
     }
   }
 	return 1;
