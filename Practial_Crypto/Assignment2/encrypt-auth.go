@@ -35,6 +35,7 @@ func main() {
 }
 
 func decrypt(key []byte, MAC []byte, msg []byte) ([]byte) {
+  fmt.Println("before decrypt: ", msg);
   IV := msg[0:16];
   msg = msg[16:];
   msg = decAesCbc(key, IV, msg);
@@ -47,13 +48,14 @@ func decrypt(key []byte, MAC []byte, msg []byte) ([]byte) {
   }
   msg = msg[0:(len(msg) - int(padByte))];
   tag := msg[len(msg) - 32:];
+  msg = msg[:len(msg) - 32];
   tagPrime := hmac(MAC, msg);
   for i := range tag {
     if tag[i] != tagPrime[i] {
       panic("INVALID TAG")
     }
   }
-  fmt.Println(string(msg[0:len(msg) - 32]));
+  fmt.Print(string(msg[0:len(msg) - 32]));
 
   return msg;
 }
@@ -61,21 +63,22 @@ func decrypt(key []byte, MAC []byte, msg []byte) ([]byte) {
 func decAesCbc(key []byte, IV []byte, msg []byte) []byte {
   block,err := aes.NewCipher(key)
   checkForError(err);
+  var prevEncBlock []byte;
   var plain []byte;
   for i := 0; i < len(msg); i += 16 {
     encryptedBlock := msg[i:i+16];
     plainBlock := make([]byte, 16);
     block.Decrypt(plainBlock, encryptedBlock);
     if i == 0 {
-      for i := range plainBlock {
-        plainBlock[i] = plainBlock[i] ^ IV[i];
+      for ind := range plainBlock {
+        plainBlock[ind] = plainBlock[ind] ^ IV[ind];
       }
     } else {
-      prevEncBlock := msg[i-16:i];
-      for i := range plainBlock {
-        plainBlock[i] = plainBlock[i] ^ prevEncBlock[i];
+      for ind := range plainBlock {
+        plainBlock[ind] = plainBlock[ind] ^ prevEncBlock[ind];
       }
     }
+    prevEncBlock = encryptedBlock;
     fmt.Println(plainBlock)
     plain = append(plain, plainBlock...);
   }
@@ -99,8 +102,9 @@ func encrypt(key []byte, MAC []byte, msg []byte) ([]byte) {
   fmt.Println("b4 encrypt: ", msg);
   IV := make([]byte, 16);
   rand.Read(IV);
-  // IV = []byte {0x4f, 0xe0, 0xd2, 0x42, 0x31, 0xb6, 0x30, 0x9c, 0x90, 0xa7, 0x8e, 0xeb, 0x8d, 0xc6, 0xff, 0x2c};
+  // IV := []byte {0x4f, 0xe0, 0xd2, 0x42, 0x31, 0xb6, 0x30, 0x9c, 0x90, 0xa7, 0x8e, 0xeb, 0x8d, 0xc6, 0xff, 0x2c};
   output := encAesCbc(key, IV, msg);
+  fmt.Println("after encrypt: ", msg);
   return output;
 }
 
@@ -109,19 +113,13 @@ func encAesCbc(key []byte, IV []byte, msg []byte) []byte{
   if err != nil {
     panic(err);
   }
-  previousEncrytedBlock := make([]byte, 16);
+  previousEncrytedBlock := IV;
   var cipher []byte;
+  cipher = append(cipher, IV...);
   for i := 0; i < len(msg); i += 16 {
-    plainBlock := msg[i:i+16];
-    fmt.Println(plainBlock);
-    if i == 0 {
-      for ind := range plainBlock {
-        plainBlock[ind] = plainBlock[ind] ^ IV[ind];
-      }
-    } else {
-      for ind := range plainBlock {
-        plainBlock[ind] = plainBlock[ind] ^ previousEncrytedBlock[ind];
-      }
+    plainBlock := msg[i:i+16]
+    for ind := range plainBlock {
+      plainBlock[ind] = plainBlock[ind] ^ previousEncrytedBlock[ind];
     }
     block.Encrypt(previousEncrytedBlock, plainBlock);
     cipher = append(cipher, previousEncrytedBlock...)
