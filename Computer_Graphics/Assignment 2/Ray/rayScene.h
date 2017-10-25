@@ -12,6 +12,9 @@
 
 #define STRING_BUFFER_SIZE 200
 
+Point3D truncate(Point3D p);
+void printPoint(Point3D p);
+
 /** If a ray intersects a shape, the shape information at the point of intersection is stored in this structure. */
 struct RayIntersectionInfo {
 	/** The material of the intersected surface */
@@ -75,7 +78,7 @@ public:
 	/** This method writes out the material information to a .ray file. If no file is specified,
 	  * the material is written out to stdout. */
 	void write(FILE* fp=stdout);
-	
+
 	/** This method calls the OpenGL commands for setting up the material. */
 	void drawOpenGL(void);
 };
@@ -212,5 +215,5 @@ public:
 };
 
 #endif // SCENE_INCLUDED
-  
+
 
