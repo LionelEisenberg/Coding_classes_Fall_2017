@@ -24,6 +24,21 @@ Point3D RaySpotLight::getDiffuse(Point3D cameraPosition,RayIntersectionInfo& iIn
 	return point;
 }
 Point3D RaySpotLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& iInfo){
+	Point3D AttenColor;
+	Point3D position = this->location;
+	Point3D v = (iInfo.iCoordinate - v).unit();
+	Point3D d = this->direction;
+	double dist = (iInfo.iCoordinate - position).length();
+	double angle = pow(d.dot(v), this->dropOffRate);
+	if (angle > cos(this->cutOffAngle)) {
+		AttenColor = this->color * angle / (this->constAtten + this->linearAtten * dist + this->quadAtten * pow(dist, 2));
+	} else {
+		AttenColor = Point3D(0,0,0);
+	}
+
+	Point3D viewerVector = (cameraPosition - iInfo.iCoordinate).unit();
+	double alpha = iInfo.normal.unit().dot(((position - iInfo.iCoordinate).unit() + viewerVector).unit());
+	Point3D point = iInfo.material->specular * pow(alpha, iInfo.material->specularFallOff) * AttenColor;
 	return Point3D();
 }
 int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape){

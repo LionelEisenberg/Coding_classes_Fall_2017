@@ -22,10 +22,11 @@ Point3D truncate(Point3D p) {
 }
 
 Point3D RayScene::Reflect(Point3D v,Point3D n){
-	return Point3D();
+	return v - n * v.dot(n) * 2;
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
+
 	return 0;
 }
 
@@ -53,25 +54,64 @@ Ray3D RayScene::GetRay(RayCamera* camera,int i,int j,int width,int height){
 	return ray;
 }
 
+Point3D recursive(Ray3D ray,int rDepth,Point3D cLimit, RayScene* scene) {
+  RayIntersectionInfo iInfo;
+  Ray3D reflect, refract;
+	Point3D diffuse, ambient, emissive, specular;
+  int shadow = 1;
+	double result = scene->group->intersect(ray, iInfo, -1.0);
+  rDepth--;
+	if (result >= 0) {
+		//get diffuse and specular
+    ambient = truncate(iInfo.material->ambient * scene->ambient);
+    emissive = truncate(iInfo.material->emissive);
+    Point3D kSpec = iInfo.material->specular;
+		for(int i = 0; i < scene->lightNum; i++) {
+      shadow = 1 - scene->lights[i]->isInShadow(iInfo, scene->group);
+      specular += truncate(scene->lights[i]->getSpecular(ray.position, iInfo) * shadow);
+      diffuse += truncate(scene->lights[i]->getDiffuse(ray.position, iInfo) * shadow);
+		}
+    Point3D returnValue = truncate(diffuse + specular);
+
+    reflect.direction = scene->Reflect(ray.direction.unit(), iInfo.normal.unit());
+    reflect.position = iInfo.iCoordinate;
+    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && shadow != 0) {
+      returnValue += kSpec * recursive(reflect, rDepth, cLimit/kSpec, scene);
+    }
+    return truncate(returnValue + ambient + emissive);
+  }
+  return Point3D();
+}
+
 Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 	RayIntersectionInfo iInfo;
+  Ray3D reflect, refract;
 	Point3D diffuse, ambient, emissive, specular;
+  int shadow = 1;
 	double result = this->group->intersect(ray, iInfo, -1.0);
 	if (result >= 0) {
 		//get diffuse and specular
+    ambient = truncate(iInfo.material->ambient * this->ambient);
+    emissive = truncate(iInfo.material->emissive);
+    Point3D kSpec = iInfo.material->specular;
 		for(int i = 0; i < this->lightNum; i++) {
-      specular += truncate(this->lights[i]->getSpecular(this->camera->position, iInfo));
-      diffuse += truncate(this->lights[i]->getDiffuse(this->camera->position, iInfo));
+      shadow = 1 - this->lights[i]->isInShadow(iInfo, this->group);
+      specular += truncate(this->lights[i]->getSpecular(ray.position, iInfo) * shadow);
+      diffuse += truncate(this->lights[i]->getDiffuse(ray.position, iInfo) * shadow);
 		}
     //get emissive and ambient
-		ambient = iInfo.material->ambient * this->ambient;
-		emissive = iInfo.material->emissive;
-    Point3D returnValue = truncate(ambient + emissive + diffuse + specular);
-		return returnValue;
-	} else if (result == -1) {
-		return this->background;
+    Point3D returnValue = truncate(diffuse + specular);
+
+    reflect.direction = this->Reflect(ray.direction.unit(), iInfo.normal.unit());
+    reflect.position = iInfo.iCoordinate;
+    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && shadow != 0) {
+      returnValue += kSpec * recursive(reflect, rDepth, cLimit/kSpec, this);
+    }
+
+    // refract.direction =
+		return truncate(returnValue + ambient + emissive);
 	}
-	return Point3D(0,0,0);
+	return this->background;
 }
 
 //////////////////
