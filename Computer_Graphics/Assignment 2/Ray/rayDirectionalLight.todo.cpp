@@ -52,8 +52,6 @@ Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* s
 		transparency += contribution
 	}
 	return transparency
-
-	return Point3D(1,1,1);
 }
 
 
