@@ -1,0 +1,89 @@
+README for Assignment n# 3
+Lionel Eisenberg - leisenb5 - leisenb5@jhu.edu
+600.445 Practical Cryptographic Systems, Fall 2017
+Partner: None
+
+===============================================================================
+
+FILES: DIRECTORY AND FUNCTIONALITY:
+
+rsa-keygen.go: key generation for private and public rsa keys
+    build with: go build rsa-keygen.go
+    run according to command in listed in homework;
+rsa-encrypt.go: rsa encryption protocol
+    build with: go build rsa-encrypt.go
+    run according to command in listed in homework;
+rsa-decrypt.go: rsa decryption protocol
+    build with: go build rsa-decrypt.go
+    run according to command in listed in homework;
+
+rabin-keygen.go: key generation for private and public rabin keys
+    build with: go build rabin-keygen.go
+    run according to command in listed in homework;
+rabin-encrypt.go: rabin encryption protocol
+    build with: go build rabin-encrypt.go
+    run according to command in listed in homework;
+rabin-decrypt.go: rabin decryption protocol
+    build with: go build rabin-decrypt.go
+    run according to command in listed in homework;
+rabin-factor.go: factors p and q from public key of rabin cryptosyste. Uses the magic rabin-crack code (in this case a modified decryption algorithm with hard coded private keys)
+    build with: go build rabin-factor.go
+    run according to command in listed in homework;
+
+===============================================================================
+
+PROBLEMS TO SIGNAL:
+
+None.
+
+===============================================================================
+
+EXTRA NOTES:
+
+Problem 4:
+
+Question 1:
+
+Inverting the RSA function is NOT equivalent to solving the factoring problem,
+indeed although it is true that being able to factor large primes would break
+textbook RSA, making it trivial to invert RSA, we cannot say the same for the
+converse problem. We have seen many attacks on RSA that dont solve the factoring
+problem, such as the attacks derived from the Coppersmith Theorem (Hastad's).
+
+Question 2:
+
+Unlike the RSA algorithm however the Rabin function is equivalent to solving the
+factoring problem. We can see this because to take the square root of the cipher
+text in the rabin cryptosystem, the private keys p and q are necessary, so if p
+and q can be factored we can reverse the rabin cryptosystem. On the other hand,
+it is impossible to reverse the rabin encryption without factoring so we see
+that the Rabin function is equivalent to solving the factoring problem.
+
+Question 3:
+
+Lets say that Thomas wants to send a message M to both Bob and Alice. He then
+sends
+    Ca = M^Ea mod N to Alice
+    Cb = M^Eb mod N to Bob
+And an attacker has access to Ca, Cb, Ea, Eb and N
+The attacker can then use the extended Euclidean Algorithm to find a*Ea + b*Eb = 1
+and with a and b, the attacker can compute:
+       Ca ^ a * Cb * b mod N, which gives:
+==>    M^(Ea * a) * M^(Eb * b) mod N
+==>    M^(1) Mod N
+
+Which gives the attacker the Message M
+
+Question 4:
+
+As we saw from the third problem, under chosen CipherText Attack, the attacker
+can compute the secrete keys of the cryptosystem, rendering the system useless
+to have very little security. Moreover, getting the Rabin keys is a very rapid process.
+
+Question 5:
+
+We can add non-determinism by adding a random padding to the padding scheme of
+the RSA implementation, thus making the implementation semantically secure.
+
+
+===============================================================================

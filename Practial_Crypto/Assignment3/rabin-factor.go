@@ -5,25 +5,17 @@ import (
 	"io/ioutil"
 	"math/big"
 	"os"
+	"os/exec"
 )
 
 func main() {
 	TWO := big.NewInt(2)
 	checkArgs()
 	publicKey, err := ioutil.ReadFile(os.Args[1])
-	var modulus, prepend []byte
-	println(prepend)
-	m := new(big.Int)
+	var modulus []byte
+	m, mod, sub := new(big.Int), new(big.Int), new(big.Int)
+	mPrime, negM := big.NewInt(0), big.NewInt(2)
 	m.SetString(os.Args[2], 10)
-	byteSlice := m.Bytes()
-	if len(byteSlice) < 8 {
-		prepend = []byte{255, 255, 255, 255, 255, 255, 255, 255}
-	} else {
-		prepend = byteSlice[len(byteSlice)-8:]
-	}
-
-	byteSlice = append(prepend, byteSlice...)
-	m.SetBytes(byteSlice)
 	checkForError(err)
 	for _, v := range publicKey {
 		if v == byte('(') || v == byte(' ') || v == byte(')') {
@@ -32,7 +24,49 @@ func main() {
 		modulus = append(modulus, v)
 	}
 	n := getNum(modulus)
-	fmt.Println(powMod(TWO, m, n))
+	cipher := powMod(TWO, m, n)
+	m.SetString(os.Args[2], 10)
+	for mPrime.Cmp(mod) == 0 || mPrime.Cmp(negM) == 0 {
+		mod.Mod(m, n)
+		out := getCrack(cipher)
+		mPrime.SetString(out, 10)
+		negM.Neg(m)
+		negM.Mod(negM, n)
+	}
+	sub.Sub(m, mPrime)
+	_, _, gcd := extendedEuclideanAlgorithm(sub, n)
+	fmt.Println(gcd)
+	q := new(big.Int)
+	q.Div(n, gcd)
+	fmt.Println(q)
+}
+
+func getCrack(cipher *big.Int) string {
+	s := cipher.String()
+	out, err := exec.Command("./rabin-crack", os.Args[1], s).Output()
+	checkForError(err)
+	return string(out)
+}
+
+func extendedEuclideanAlgorithm(a, b *big.Int) (*big.Int, *big.Int, *big.Int) {
+	x, y, u, v := big.NewInt(0), big.NewInt(1), big.NewInt(1), big.NewInt(0)
+	for a.Cmp(big.NewInt(0)) != 0 {
+		var quotient, remainder, i, j = big.NewInt(1), big.NewInt(1), big.NewInt(1), big.NewInt(1)
+		quotient.Div(b, a)
+		remainder.Mod(b, a)
+		i.Mul(u, quotient)
+		i.Sub(x, i)
+		j.Mul(v, quotient)
+		j.Sub(y, j)
+		b = a
+		a = remainder
+		x = u
+		y = v
+		u = i
+		v = j
+	}
+	g := b
+	return x, y, g
 }
 
 func getNum(modulus []byte) *big.Int {

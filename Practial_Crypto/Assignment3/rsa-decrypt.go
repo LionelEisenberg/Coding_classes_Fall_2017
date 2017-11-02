@@ -34,7 +34,6 @@ func main() {
 	}
 	n := getNum(modulus)
 	d := getNum(privateExponent)
-	fmt.Println()
 	fmt.Println(powMod(d, c, n))
 }
 
