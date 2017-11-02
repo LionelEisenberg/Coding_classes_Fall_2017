@@ -22,8 +22,7 @@ func main() {
 		temp1.Mod(p, big.NewInt(4))
 		temp2.Mod(q, big.NewInt(4))
 	}
-
-	fmt.Println(temp1, temp2)
+	modulus.Mul(p, q)
 	f, err := os.Create(os.Args[1])
 	checkForError(err)
 	fmt.Fprint(f, "(", modulus, ")")

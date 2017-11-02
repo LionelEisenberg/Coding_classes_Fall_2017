@@ -8,30 +8,32 @@ import (
 )
 
 func main() {
+	TWO := big.NewInt(2)
 	checkArgs()
 	publicKey, err := ioutil.ReadFile(os.Args[1])
+	var modulus, prepend []byte
+	println(prepend)
 	m := new(big.Int)
 	m.SetString(os.Args[2], 10)
+	byteSlice := m.Bytes()
+	if len(byteSlice) < 8 {
+		prepend = []byte{255, 255, 255, 255, 255, 255, 255, 255}
+	} else {
+		prepend = byteSlice[len(byteSlice)-8:]
+	}
+	// fmt.Println(byteSlice)
+	// fmt.Println(prepend)
+	byteSlice = append(prepend, byteSlice...)
+	m.SetBytes(byteSlice)
 	checkForError(err)
-	var modulus, exponent []byte
-	var set bool
 	for _, v := range publicKey {
 		if v == byte('(') || v == byte(' ') || v == byte(')') {
 			continue
 		}
-		if v == byte(',') {
-			set = true
-			continue
-		}
-		if set {
-			exponent = append(exponent, v)
-		} else {
-			modulus = append(modulus, v)
-		}
+		modulus = append(modulus, v)
 	}
 	n := getNum(modulus)
-	e := getNum(exponent)
-	fmt.Println(powMod(e, m, n))
+	fmt.Println(powMod(TWO, m, n))
 }
 
 func getNum(modulus []byte) *big.Int {
@@ -57,7 +59,6 @@ func powMod(a, b, p *big.Int) *big.Int {
 			t.Mul(b, result)
 			result.Mod(t, p)
 		}
-		// y must be even now
 		a.Div(a, big.NewInt(2))
 		b.Mul(b, b)
 		b.Mod(b, p)

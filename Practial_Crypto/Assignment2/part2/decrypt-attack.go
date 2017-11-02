@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func main() {
@@ -12,25 +13,30 @@ func main() {
 	inputArg := getArgNums()
 	cipherText, err := ioutil.ReadFile(os.Args[inputArg])
 	checkForError(err)
-	for i := len(cipherText)/16 - 3; i >= 0; i++ {
-		copyCipher := cipherText[0 : (i+2)*16]
-		for j := 0x00; j <= 0xff; j++ {
-			cipherText, _ = ioutil.ReadFile(os.Args[inputArg])
-			copyCipher[i*16+15] = byte(j) ^ cipherText[i*16+15] ^ 0x01
-			filename := "output1.txt"
-			err = ioutil.WriteFile(filename, copyCipher, 0644)
-			checkForError(err)
-			println(j)
-			if getDecrypt(filename) != "INVALID PADDING" {
-				fmt.Println(byte(j))
+	filename := "output"
+	plainText := make([]byte, len(cipherText))
+	for i := len(cipherText)/16 - 5; i >= 0; i-- {
+		copyCipher := make([]byte, (i+2)*16)
+		copy(copyCipher, cipherText[0:(i+2)*16])
+		for k := 15; k >= 0; k-- {
+			for h := k + 1; h < 16; h++ {
+				copyCipher[i*16+h] = plainText[(i+1)*16+h] ^ cipherText[i*16+h] ^ byte(16-k)
+			}
+			for j := 0x00; j <= 0xff; j++ {
+				copyCipher[i*16+k] = byte(j) ^ cipherText[i*16+k] ^ byte(16-k)
+				err = ioutil.WriteFile(filename, copyCipher, 0644)
+				checkForError(err)
+				if !strings.Contains(getDecrypt(filename), "INVALID PADDING") {
+					plainText[(i+1)*16+k] = byte(j)
+				}
 			}
 		}
-		break
 	}
+	fmt.Println(string(plainText[16:]))
 }
 
 func getDecrypt(filename string) string {
-	cmd := exec.Command("go", "run", "decrypt-test.go", "-i", filename)
+	cmd := exec.Command("./decrypt-test", "-i", filename)
 	stdout, err := cmd.Output()
 	checkForError(err)
 	cmd.Run()
