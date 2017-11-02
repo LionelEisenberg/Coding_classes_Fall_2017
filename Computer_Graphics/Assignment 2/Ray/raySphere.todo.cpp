@@ -37,7 +37,7 @@ double RaySphere::intersect(Ray3D ray, RayIntersectionInfo& iInfo,double mx){
 		double t2 = (-beta - sqrt(discriminant)) / (2 * alpha);
 		Point3D intersection1 = pos + dir * t1;
 		Point3D intersection2 = pos + dir * t2;
-		if ((intersection1 - pos).length() < (intersection2 - pos).length()) {
+		if ((intersection1 - pos).length() < (intersection2 - pos).length() && t1 > 0.0001) {
 			intersection = intersection1;
 			if (t1 < 0.0001) {
 				return -1;
@@ -58,6 +58,14 @@ double RaySphere::intersect(Ray3D ray, RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RaySphere::setBoundingBox(void){
+ 	double xmax = this->center.p[0] + radius;
+	double ymax = this->center.p[1] + radius;
+	double zmax = this->center.p[2] + radius;
+	double xmin = this->center.p[0] - radius;
+	double ymin = this->center.p[1] - radius;
+	double zmin = this->center.p[2] - radius;
+	this->bBox.p[0] = Point3D(xmin, ymin, zmin);
+	this->bBox.p[1] = Point3D(xmax, ymax, zmax);
 	return bBox;
 }
 

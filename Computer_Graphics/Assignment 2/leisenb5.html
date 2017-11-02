@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lionel Eisenberg Submission for Assignment1</title>
+    <style media="screen">
+      body {
+        line-height: 50%;
+      }
+      img {
+        height: auto;
+        width: auto;
+        max-width: 300px;
+        max-height: 300px;
+      }
+      h1, h2 {
+        text-align: center;
+      }
+      table tr:nth-child(2) td {
+        text-align: center;
+        font-size: 80%;
+      }
+      p {
+        line-height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Submission for Lionel Eisenberg, leisenb5</h1>
+    <h2>Assignment2, Fall 2017, Computer Graphics</h2>
+    <p>Compiler/Environment: Unbuntu Bash on windows</p>
+    <p>Number of late days: 0</p>
+    <p><a href="https://github.com/LionelEisenberg/Coding_classes_Fall_2017/tree/master/Computer_Graphics">Github Link</a></p>
+    <hr>
+    <ul>
+      <li>
+        <h3>Art contest Submission: The creepy Duck</h3>
+        <img src="leisenb5_HTML/TheCreepyDuck.bmp">
+        <p>Made from the ray file located in <code>leisenb5_html/CreepyDuck.ray</code> and run with the following command:</p>
+        <p><code> Bin/Linux/Assignment2 --in leisenb5_html/CreepyDuck.ray --out leisenb5_html/TheCreepyDuck.bmp --width 500 --height 500 --rLimit 5 --cLimit 0.00001</code></p>
+        <img src="leisenb5_HTML/TEST_IMAGES/gifOutput/macron8.jpg">
+      </li>
+
+      <li>
+        <h3>3 types of light and 2 different objects submission</h3>
+        <img src="leisenb5_html/multipleLights.bmp">
+        <p>Made from the ray file located in <code>leisenb5_html/test.ray</code> and run with the following command:</p>
+        <p><code> Bin/Linux/Assignment2 --in leisenb5_html/MultipleLights.ray --out leisenb5_html/multipleLights.bmp --width 500 --height 500 --rLimit 5 --cLimit 0.00001</code></p>
+      </li>
+      <li><h3>Final picture</h3>
+        <img src="leisenb5_HTML/good_result.bmp">
+        <p>Uses helper function RandomFloat to add random noise to image</p>
+        <p><code> Bin/Linux/Assignment2 --in leisenb5_html/test.ray --out leisenb5_html/good_result.bmp --width 500 --height 500 --rLimit 5 --cLimit 0.00001</code></p>
+      </li>
+      <li><h3>List of implmented functions and their degree of implementation<</h3>
+        <ul>
+          <li><p><strong>RayScene::GetRay</strong> <i>Generate rays from the camera's position through (i,j)-th pixel of a widthxheight view plane.</i> - Fully implemented</p></li>
+          <li><p><strong>RayGroup::intersect</strong> <i>Cast rays through scene-graph nodes.</i> - Fully implemented</p></li>
+          <li><p><strong>RaySphere::intersect</strong> <i>Compute ray intersections with a sphere.</i> - Fully implemented</p></li>
+          <li><p><strong>RayTriangle::intersect</strong> <i>Compute ray intersections with a triangle.</i> - Fully implemented</p></li>
+          <li><p><strong>RayScene::GetColor</strong> <i>Return the color at the point of intersection using the ambient and emissive properties of the RayMaterial of the intersected shape.</i> - Fully implemented</p></li>
+          <li><p><strong>RayLight::getDiffuse</strong> <i>Obtain the diffuse color contribution of the lights at the point of intersection.</i> - Fully implemented</p></li>
+          <li><p><strong>RayLight::getSpecular</strong> <i>Obtain the specular color contribution of the lights at the point of intersection.</i> - Fully implemented</p></li>
+          <li><p><strong>RayLight::isInShadow</strong> <i>Determine if the point of intersection is in shadow from a particular light source.</i> - Fully implemented</p></li>
+          <ul>
+            <li>To implement, turn shadow term in RayScene::GetColor and RayScene::recursive to a double and call isInShadow instead of transparency</li>
+          </ul>
+          <li><p><strong>RayScene::GetColor</strong> <i>Modify the computation of the color at the point of intersection to take into account the diffuse and specular contributions of all of the light sources </i> - Fully implemented</p></li>
+          <li><p><strong>RayGroup::intersect</strong> <i>Modify this method so that it takes into account the local transformation returned by the call: RayGroup::getMatrix.</i> - Fully implemented</p></li>
+          <li><p><strong>RayScene::GetColor</strong> <i>Implement RayScene::Reflect</i> - Fully implemented</p></li>
+          <li><p><strong>RayScene::GetColor</strong> <i>Recursively cast refracted rays through the point of intersection and add the refracted color contribution to returned color value, ignoring the refraction index for now. </i> - Fully implemented</p></li>
+          <ul><li>To implement this, uncomment first line of RayScene::Refract</li></ul>
+          <li><p><strong>RayScene::GetColor</strong> <i>Allow transparent objects to cast partial shadows</i> - Fully implemented</p></li>
+          <li><p><strong>RayScene::GetColor</strong> <i>Implement RayScene::Refract</i> - Fully implemented</p></li>
+          <li><p><strong>Accelerated Ray Tracing</strong> <i>Accelerate ray intersection tests with hierarchical bounding boxes.</i> - Fully implemented</p></li>
+          <ul>
+            <li><p><strong>RayShape::setBoundingBox</strong> - properly implemented for RayTriangle and RaySphere</p></li>
+            <li><p><strong>RayGroup::setBoundingBox</strong> - Properly implemented</p></li>
+            <li><p><strong>BoundingBox3D::intersect</strong> - Properly Implmented</p></li>
+            <li><p><strong>RayGroup::intersect</strong> - Fully implemented</p></li>
+          </ul>
+          <li><p><strong>Accelerated Ray Tracing</strong> <i>Modify <strong>RayGroup::intersect</strong> method so that it first computes the intersection with all the bounding boxes of all the child shapes, then sorts the shapes based on the proximity of their bounding box intersection and finally, tests the child RayShapes in order, allowing for early termination of the ray tracing.</i> - Fully Implemented</p></li>
+          <li><i><p>Generate a 3D scene and save it as a .ray file.</i> - Fully implemented</li>
+          <li><p><strong>RayBox::intersect</strong> <i>Compute ray intersections with a box.</i> - Fully implemented</p></li>
+          <li><p><strong>RayCylinder::intersect</strong> <i>Compute ray intersections with a cylinder.</i> - Fully implemented</p></li>
+        </ul>
+        <p><strong>All other parts of the assignment have not been implemented due to lack of sleep</strong></p>
+      </li>
+    </ul>
+    <hr>
+  </body>
+</html>

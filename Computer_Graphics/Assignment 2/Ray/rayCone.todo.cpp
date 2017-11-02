@@ -9,7 +9,7 @@
 //  Ray-tracing stuff //
 ////////////////////////
 double RayCone::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
-	return -1;
+
 }
 
 BoundingBox3D RayCone::setBoundingBox(void){

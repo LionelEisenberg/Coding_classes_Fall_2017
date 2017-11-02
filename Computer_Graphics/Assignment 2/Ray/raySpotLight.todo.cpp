@@ -42,10 +42,35 @@ Point3D RaySpotLight::getSpecular(Point3D cameraPosition,RayIntersectionInfo& iI
 	return Point3D();
 }
 int RaySpotLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape){
+	Point3D position = this->location;
+	Ray3D ray = Ray3D(iInfo.iCoordinate, (position - iInfo.iCoordinate).unit());
+	if (shape->intersect(ray, iInfo, -1.0) != -1 && shape->intersect(ray, iInfo, -1.0) < (position - iInfo.iCoordinate).length()) {
+		return 1;
+	}
 	return 0;
 }
 Point3D RaySpotLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
-	return Point3D(1,1,1);
+	Point3D position = this->location;
+	Point3D transparency;
+	Point3D contribution = Point3D(1,1,1);
+	double dist;
+	int count = 0;
+	while (contribution[0] > cLimit[0]) {
+		Ray3D ray = Ray3D(iInfo.iCoordinate, (position - iInfo.iCoordinate).unit());
+		dist = shape->intersect(ray, iInfo, -1.0);
+		if ((dist == -1  || dist > (position - iInfo.iCoordinate).length()) && count == 0) {
+			return Point3D(1,1,1);
+		}
+		if (dist != -1 && dist < (position - iInfo.iCoordinate).length()) {
+			Point3D kT = iInfo.material->transparent;
+			contribution = kT * 1;
+			transparency += truncate(contribution);
+			count++;
+		} else {
+			break;
+		}
+	}
+	return truncate(transparency);
 }
 
 //////////////////

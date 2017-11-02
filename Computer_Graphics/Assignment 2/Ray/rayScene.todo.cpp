@@ -29,6 +29,7 @@ Point3D RayScene::Reflect(Point3D v,Point3D n){
 }
 
 int RayScene::Refract(Point3D v,Point3D n,double ir,Point3D& refract){
+  // ir = 1
   double cosNI = n.dot(v);
   double a = 1 - pow(ir, 2) * (1 - cosNI * cosNI);
   if (a < 0) {
@@ -68,6 +69,7 @@ Point3D recursive(Ray3D ray,int rDepth,Point3D cLimit, RayScene* scene) {
   Ray3D reflect, refract;
 	Point3D diffuse, ambient, emissive, specular;
   Point3D shadow;
+  double isShadowed = 0;
 	double result = scene->group->intersect(ray, iInfo, -1.0);
   rDepth--;
 	if (result >= 0) {
@@ -83,6 +85,7 @@ Point3D recursive(Ray3D ray,int rDepth,Point3D cLimit, RayScene* scene) {
       if (shadow[0] != 1) {
         specular += truncate(sTerm * shadow);
         diffuse += truncate(dTerm * shadow);
+        isShadowed = 1;
       } else {
         specular += truncate(sTerm);
         diffuse += truncate(dTerm);
@@ -91,14 +94,15 @@ Point3D recursive(Ray3D ray,int rDepth,Point3D cLimit, RayScene* scene) {
     Point3D returnValue = truncate(diffuse + specular);
 
     reflect.direction = scene->Reflect(ray.direction.unit(), iInfo.normal.unit());
-    reflect.position = iInfo.iCoordinate;
-    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && shadow[0] == 1) {
+    reflect.position = iInfo.iCoordinate + reflect.direction * 0.001;
+    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && isShadowed != 1) {
       returnValue += kSpec * recursive(reflect, rDepth, cLimit/kSpec, scene);
     }
 
     int isRefract = scene->Refract(ray.direction.unit(), iInfo.normal.unit(), iInfo.material->refind, refract.direction);
-    refract.position = iInfo.iCoordinate;
-    if (rDepth > 0 && (kTran[0] > cLimit[0] && kTran[1] > cLimit[1] && kTran[2] > cLimit[2]) && shadow[0] == 1 && isRefract) {
+    refract.position = iInfo.iCoordinate + refract.direction * 0.001;
+    refract.direction = refract.direction.unit();
+    if (rDepth > 0 && (kTran[0] > cLimit[0] && kTran[1] > cLimit[1] && kTran[2] > cLimit[2]) && isShadowed != 1 && isRefract == 1) {
       returnValue += kTran * recursive(refract, rDepth, cLimit/kTran, scene);
     }
     return truncate(returnValue + ambient + emissive);
@@ -110,6 +114,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 	RayIntersectionInfo iInfo;
   Ray3D reflect, refract;
 	Point3D diffuse, ambient, emissive, specular, shadow;
+  double isShadowed = 0;
 	double result = this->group->intersect(ray, iInfo, -1.0);
 	if (result >= 0) {
 		//get diffuse and specular
@@ -124,6 +129,7 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
       if (shadow[0] != 1) {
         specular += truncate(sTerm * shadow);
         diffuse += truncate(dTerm * shadow);
+        isShadowed = 1;
       } else {
         specular += truncate(sTerm);
         diffuse += truncate(dTerm);
@@ -131,16 +137,17 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 		}
     //get emissive and ambient
     Point3D returnValue = truncate(diffuse + specular);
-
+    // printf("%f\n", isShadowed);
     reflect.direction = this->Reflect(ray.direction.unit(), iInfo.normal.unit());
-    reflect.position = iInfo.iCoordinate;
-    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && shadow[0] == 1) {
+    reflect.position = iInfo.iCoordinate + reflect.direction * 0.001;
+    if (rDepth > 0 && (kSpec[0] > cLimit[0] && kSpec[1] > cLimit[1] && kSpec[2] > cLimit[2]) && isShadowed != 1) {
       returnValue += kSpec * recursive(reflect, rDepth, cLimit/kSpec, this);
     }
 
     int isRefract = this->Refract(ray.direction.unit(), iInfo.normal.unit(), iInfo.material->refind, refract.direction);
-    refract.position = iInfo.iCoordinate;
-    if (rDepth > 0 && (kTran[0] > cLimit[0] && kTran[1] > cLimit[1] && kTran[2] > cLimit[2]) && shadow[0] == 1 && isRefract) {
+    refract.position = iInfo.iCoordinate + refract.direction * 0.001;
+    refract.direction = refract.direction.unit();
+    if (rDepth > 0 && (kTran[0] > cLimit[0] && kTran[1] > cLimit[1] && kTran[2] > cLimit[2]) && isShadowed != 1 && isRefract == 1) {
       returnValue += kTran * recursive(refract, rDepth, cLimit/kTran, this);
     }
 

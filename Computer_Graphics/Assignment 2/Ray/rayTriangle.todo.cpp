@@ -7,7 +7,6 @@
 //  Ray-tracing stuff //
 ////////////////////////
 void RayTriangle::initialize(void){
-	Plane3D* plane = new Plane3D(this->v[0]->position, this->v[1]->position,this->v[2]->position);
 	this->v1 = this->v[0]->position;
 	this->v2 = this->v[1]->position;
 	Point3D v1 = (this->v[1]->position - this->v[0]->position);
@@ -49,6 +48,34 @@ double RayTriangle::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 
 
 BoundingBox3D RayTriangle::setBoundingBox(void){
+	double xmax = -10000;
+	double ymax = -10000;
+	double zmax = -10000;
+	double xmin = 10000;
+	double ymin = 10000;
+	double zmin = 10000;
+	for (int i = 0; i < 3; i++) {
+		if (xmax < this->v[i]->position[0]) {
+			xmax = this->v[i]->position[0];
+		}
+		if (ymax < this->v[i]->position[1]) {
+			ymax = this->v[i]->position[1];
+		}
+		if (zmax < this->v[i]->position[2]) {
+			zmax = this->v[i]->position[2];
+		}
+		if (xmin > this->v[i]->position[0]) {
+			xmin = this->v[i]->position[0];
+		}
+		if (ymin > this->v[i]->position[1]) {
+			ymin = this->v[i]->position[1];
+		}
+		if (zmin > this->v[i]->position[2]) {
+			zmin = this->v[i]->position[2];
+		}
+	}
+	this->bBox.p[0] = Point3D(xmin, ymin, zmin);
+	this->bBox.p[1] = Point3D(xmax, ymax, zmax);
 	return bBox;
 }
 

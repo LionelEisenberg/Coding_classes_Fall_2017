@@ -7,12 +7,26 @@
 //  Ray-tracing stuff //
 ////////////////////////
 
-
 double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
+	//default return is no hit - so return -1
 	double valToReturn = -1.0;
 	Ray3D rayPrime = Ray3D(this->getInverseMatrix().multPosition(ray.position), (this->getInverseMatrix().multDirection(ray.direction)).unit());
+	int totShapeHit = 0;
+	//loop through shapes
+
 	for(int i = 0; i < this->sNum; i++) {
-		double dist = this->shapes[i]->intersect(rayPrime, iInfo, mx);
+		double dist1 = this->shapes[i]->bBox.intersect(rayPrime);
+		if (dist1 >= 0 && (mx < 0 || dist1 < mx)) {
+			this->hits[totShapeHit].shape = this->shapes[i];
+			this->hits[totShapeHit].t = dist1;
+			totShapeHit++;
+		}
+	}
+
+	qsort(hits, totShapeHit, sizeof(RayShapeHit), RayShapeHit::Compare);
+
+	for(int i = 0; i < totShapeHit; i++) {
+		double dist = this->hits[i].shape->intersect(rayPrime, iInfo, mx);
 		if (dist >= 0 && (mx < 0 || dist < mx)) {
 			mx = dist;
 			iInfo.iCoordinate = getMatrix().multPosition(iInfo.iCoordinate);
@@ -24,6 +38,36 @@ double RayGroup::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayGroup::setBoundingBox(void){
+	double xmax = -10000;
+	double ymax = -10000;
+	double zmax = -10000;
+	double xmin = 10000;
+	double ymin = 10000;
+	double zmin = 10000;
+	for (int i = 0; i < this->sNum; i++) {
+		this->shapes[i]->setBoundingBox();
+		BoundingBox3D b = this->shapes[i]->bBox;
+		if (xmax < b.p[1].p[0]) {
+			xmax = b.p[1].p[0];
+		}
+		if (ymax < b.p[1].p[1]) {
+			ymax = b.p[1].p[1];
+		}
+		if (zmax < b.p[1].p[2]) {
+			zmax = b.p[1].p[2];
+		}
+		if (xmin > b.p[0].p[0]) {
+			xmin = b.p[0].p[0];
+		}
+		if (ymin > b.p[0].p[1]) {
+			ymin = b.p[0].p[1];
+		}
+		if (zmin > b.p[0].p[2]) {
+			zmin = b.p[0].p[2];
+		}
+	}
+	this->bBox.p[0] = Point3D(xmin, ymin, zmin);
+	this->bBox.p[1] = Point3D(xmax, ymax, zmax);
 	return bBox;
 }
 

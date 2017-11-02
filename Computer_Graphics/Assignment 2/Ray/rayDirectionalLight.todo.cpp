@@ -29,10 +29,9 @@ int RayDirectionalLight::isInShadow(RayIntersectionInfo& iInfo,RayShape* shape){
 	return 0;
 }
 Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* shape,Point3D cLimit){
-	Ray3D ray = Ray3D(iInfo.iCoordinate, this->direction.unit().negate());
 	Point3D transparency;
 	Point3D contribution = Point3D(1,1,1);
-	double dist, dist2;
+	double dist;
 	int count = 0;
 	while (contribution[0] > cLimit[0]) {
 		Ray3D ray = Ray3D(iInfo.iCoordinate, this->direction.unit().negate());
@@ -42,13 +41,10 @@ Point3D RayDirectionalLight::transparency(RayIntersectionInfo& iInfo,RayShape* s
 		}
 		if (dist != -1) {
 			Point3D kT = iInfo.material->transparent;
-			// printPoint(kT);
-			contribution *= kT * kT;
-			transparency += contribution;
-			// printPoint(transparency);
+			contribution = kT * 1;
+			transparency += truncate(contribution);
 			count++;
 		} else {
-			// contribution = Point3D();
 			break;
 		}
 	}
