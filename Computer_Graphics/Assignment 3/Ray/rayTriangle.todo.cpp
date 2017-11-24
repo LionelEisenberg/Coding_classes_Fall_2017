@@ -32,16 +32,19 @@ int RayTriangle::drawOpenGL(int materialIndex){
 		glEnable(GL_TEXTURE_2D);
 		material->tex->setUpOpenGL();
 	}
-	this->material->drawOpenGL();
+	if (materialIndex != this->material->index) {
+		this->material->drawOpenGL();
+	}
 	glBegin(GL_TRIANGLES);
-	glNormal3f(plane.normal	.p[0],plane.normal.p[1], plane.normal.p[2]);
-	glTexCoord2f(this->v[0]->texCoordinate[0], this->v[0]->texCoordinate[2]);
+	Plane3D plane = Plane3D(this->v[0]->position, this->v[1]->position, this->v[2]->position);
+	glNormal3f(plane.normal.p[0], plane.normal.p[1], plane.normal.p[2]);
+	glTexCoord2f(this->v[0]->texCoordinate[0], this->v[0]->texCoordinate[1]);
 	glVertex3f(this->v[0]->position[0], this->v[0]->position[1], this->v[0]->position[2]);
-	glTexCoord2f(this->v[1]->texCoordinate[0], this->v[1]->texCoordinate[2]);
+	glTexCoord2f(this->v[1]->texCoordinate[0], this->v[1]->texCoordinate[1]);
 	glVertex3f(this->v[1]->position[0], this->v[1]->position[1], this->v[1]->position[2]);
-	glTexCoord2f(this->v[2]->texCoordinate[0], this->v[2]->texCoordinate[2]);
+	glTexCoord2f(this->v[2]->texCoordinate[0], this->v[2]->texCoordinate[1]);
 	glVertex3f(this->v[2]->position[0], this->v[2]->position[1], this->v[2]->position[2]);
 	glEnd();
 
-	return -1;
+	return this->material->index;
 }

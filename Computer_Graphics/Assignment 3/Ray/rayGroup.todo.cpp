@@ -41,12 +41,16 @@ int RayGroup::drawOpenGL(int materialIndex){
 		}
 	}
 	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 	glPushMatrix();
 	glMultMatrixf(matrix);
 	for(int i = 0; i < sNum; i++) {
-		this->shapes[i]->drawOpenGL(materialIndex);
+		materialIndex = this->shapes[i]->drawOpenGL(materialIndex);
+		printf("%d\n", i);
 	}
 	glPopMatrix();
+	glDisable(GL_DEPTH_TEST);
 	return -1;
 }
 

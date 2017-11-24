@@ -13,6 +13,9 @@ double RayCone::intersect(Ray3D ray,RayIntersectionInfo& iInfo,double mx){
 }
 
 BoundingBox3D RayCone::setBoundingBox(void){
+	Point3D p;
+	p=Point3D(radius,height/2,radius);
+	bBox=BoundingBox3D(center+p,center-p);
 	return bBox;
 }
 
@@ -20,5 +23,15 @@ BoundingBox3D RayCone::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayCone::drawOpenGL(int materialIndex){
+	if (materialIndex != this->material->index) {
+		this->material->drawOpenGL();
+	}
+	GLUquadric *quad, *quad1;
+	quad = gluNewQuadric();
+	glTranslatef(this->center[0], this->center[1], this->center[2]);
+	gluCylinder(quad, this->radius, 0, this->height , openGLComplexity, openGLComplexity);
+
+	quad1 = gluNewQuadric();
+	gluDisk(quad1,0,  this->radius, openGLComplexity, openGLComplexity);
 	return -1;
 }

@@ -10,7 +10,7 @@ RayTriangle::RayTriangle(void){
 int RayTriangle::read(FILE* fp,int* index,RayVertex* vList,int vSize){
 	int v1,v2,v3;
 	if(fscanf(fp," %d %d %d %d",index,&v1,&v2,&v3) != 4){
-		fprintf(stderr, "Failed to parse shape_triangle for Triangle\n"); 
+		fprintf(stderr, "Failed to parse shape_triangle for Triangle\n");
 		return 0;
 	}
 	if(v1<0 || v1>=vSize || v2<0 || v2>=vSize || v3<0 || v3>=vSize){

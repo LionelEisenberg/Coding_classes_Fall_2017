@@ -61,7 +61,7 @@ void RayGroup::setUpOpenGL(int cplx)
 StaticRayGroup::StaticRayGroup(void) : RayGroup(){localTransform=Matrix4D::IdentityMatrix();}
 
 int StaticRayGroup::read(FILE* fp){
-	if(fscanf(fp," %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg", 
+	if(fscanf(fp," %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg",
 		&(localTransform(0,0)),&(localTransform(1,0)),
 		&(localTransform(2,0)),&(localTransform(3,0)),
 		&(localTransform(0,1)),&(localTransform(1,1)),
@@ -70,7 +70,7 @@ int StaticRayGroup::read(FILE* fp){
 		&(localTransform(2,2)),&(localTransform(3,2)),
 		&(localTransform(0,3)),&(localTransform(1,3)),
 		&(localTransform(2,3)),&(localTransform(3,3))) != 16){
-		fprintf(stderr, "Failed to parse group_begin for StaticGroup\n"); 
+		fprintf(stderr, "Failed to parse group_begin for StaticGroup\n");
 		return 0;
 	}
 	return set();
