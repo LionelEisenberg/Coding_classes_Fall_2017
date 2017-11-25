@@ -18,6 +18,8 @@ BoundingBox3D RayBox::setBoundingBox(void){
 //////////////////
 // OpenGL stuff //
 //////////////////
+
+//https://www.opengl.org/archives/resources/code/samples/glut_examples/examples/cube.c
 int RayBox::drawOpenGL(int materialIndex){
 		GLfloat norms[6][3] = {
 				{-1.0, 0.0, 0.0},
@@ -42,7 +44,9 @@ int RayBox::drawOpenGL(int materialIndex){
 			v[2][1] = v[3][1] = v[6][1] = v[7][1] = this->length[1] / 2 + this->center[1];
 			v[1][2] = v[2][2] = v[5][2] = v[6][2] = this->length[2] / 2 + this->center[2];
 
-			this->material->drawOpenGL();
+			if (materialIndex != this->material->index) {
+				this->material->drawOpenGL();
+			}
 		  for (int i = 0; i < 6; i++) {
 		    glBegin(GL_QUADS);
 		    glNormal3fv(&norms[i][0]);
@@ -52,5 +56,5 @@ int RayBox::drawOpenGL(int materialIndex){
 		    glEnd();
 		  }
 
-	return -1;
+	return materialIndex;
 }

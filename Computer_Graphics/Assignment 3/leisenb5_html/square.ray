@@ -1,11 +1,20 @@
 #texture_num 1
-#texture tile.jpg
-#material_num 1
+#texture leisenb5_html/small.jpg
+#material_num 2
+#material
+	0.0 0.0 0.0
+	0.3 0.3 0.3
+	1.1 0.1 0.5
+	1.0 1.0 1.0 100
+	0.0 0.0 0.0
+	1.05
+	-1
+	!!
 #material
 	0.0 0.0 0.0
 	0.3 0.3 0.3
 	0.1 0.1 0.5
-	1.0 1.0 1.0 128
+	1.0 1.0 1.0 100
 	0.0 0.0 0.0
 	1.05
 	0
@@ -14,20 +23,20 @@
 #vertex
 	-2  0  2
 	 0  1  0
-	 0  0
+	 0  1
 #vertex
 	 2  0  2
 	 0  1  0
-	 0  0
+	 1  1
 #vertex
 	 2  0 -2
 	 0  1  0
-	 0  0
+	 1 0
 #vertex
 	-2  0 -2
 	 0  1  0
 	 0  0
-#shape_triangle 0
+#shape_triangle 1
 	0 1 2
 #shape_triangle 0
 	0 2 3

@@ -47,7 +47,6 @@ int RayGroup::drawOpenGL(int materialIndex){
 	glMultMatrixf(matrix);
 	for(int i = 0; i < sNum; i++) {
 		materialIndex = this->shapes[i]->drawOpenGL(materialIndex);
-		printf("%d\n", i);
 	}
 	glPopMatrix();
 	glDisable(GL_DEPTH_TEST);

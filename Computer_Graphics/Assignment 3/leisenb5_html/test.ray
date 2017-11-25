@@ -2,8 +2,8 @@
 #background 0.2 0.2 0.2
 #ambient 0.5 0.5 0.5
 #ray_file_num 2
-#ray_file cone.ray
-#ray_file square.ray
+#ray_file leisenb5_html/cone.ray
+#ray_file leisenb5_html/square.ray
 #light_num 1
 #light_dir
 	 1.0  1.0  1.0
