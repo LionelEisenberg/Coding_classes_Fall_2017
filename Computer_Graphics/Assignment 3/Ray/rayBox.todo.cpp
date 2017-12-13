@@ -21,6 +21,7 @@ BoundingBox3D RayBox::setBoundingBox(void){
 
 //https://www.opengl.org/archives/resources/code/samples/glut_examples/examples/cube.c
 int RayBox::drawOpenGL(int materialIndex){
+	glDisable(GL_CULL_FACE);
 		GLfloat norms[6][3] = {
 				{-1.0, 0.0, 0.0},
 				{0.0, 1.0, 0.0},

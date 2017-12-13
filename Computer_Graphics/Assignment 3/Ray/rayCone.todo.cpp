@@ -23,6 +23,7 @@ BoundingBox3D RayCone::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayCone::drawOpenGL(int materialIndex){
+	glDisable(GL_CULL_FACE);
 	if (materialIndex != this->material->index) {
 		this->material->drawOpenGL();
 	}

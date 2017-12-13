@@ -30,8 +30,6 @@ Point3D RayScene::GetColor(Ray3D ray,int rDepth,Point3D cLimit){
 void RayMaterial::drawOpenGL(void){
 	if (this->tex) {
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, tex->openGLHandle);
-		printf("makes textures\n");
 		this->tex->setUpOpenGL();
 	}
 	glEnable(GL_BLEND);
@@ -70,5 +68,4 @@ void RayTexture::setUpOpenGL(void){
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 	glTexImage2D(GL_TEXTURE_2D,0, GL_RGBA, this->img->width(), this->img->height(), 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }

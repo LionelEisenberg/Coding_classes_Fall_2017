@@ -31,5 +31,4 @@ void RayDirectionalLight::drawOpenGL(int index){
 	glLightfv(GL_LIGHT0+index, GL_POSITION, position);
 	glLightfv(GL_LIGHT0+index, GL_DIFFUSE, Color);
 	glLightfv(GL_LIGHT0+index, GL_SPECULAR, Color);
-	// glDisable(GL_LIGHTING);
 }

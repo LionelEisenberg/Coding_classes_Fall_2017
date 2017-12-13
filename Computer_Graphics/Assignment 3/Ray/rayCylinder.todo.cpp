@@ -23,6 +23,8 @@ BoundingBox3D RayCylinder::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayCylinder::drawOpenGL(int materialIndex){
+	glDisable(GL_CULL_FACE);
+
 	if (materialIndex != this->material->index) {
 		this->material->drawOpenGL();
 	}

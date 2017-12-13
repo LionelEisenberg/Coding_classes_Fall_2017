@@ -40,5 +40,4 @@ void RayPointLight::drawOpenGL(int index){
 	glLightfv(GL_LIGHT0+index, GL_CONSTANT_ATTENUATION, constAttenuation);
 	glLightfv(GL_LIGHT0+index, GL_QUADRATIC_ATTENUATION, quadAttenuation);
 	glLightfv(GL_LIGHT0+index, GL_LINEAR_ATTENUATION, linearAttenuation);
-
 }

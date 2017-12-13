@@ -28,6 +28,7 @@ BoundingBox3D RayTriangle::setBoundingBox(void){
 // OpenGL stuff //
 //////////////////
 int RayTriangle::drawOpenGL(int materialIndex){
+	glDisable(GL_CULL_FACE);
 	Plane3D plane = Plane3D(this->v[0]->position, this->v[1]->position, this->v[2]->position);
 	if (this->material->tex) {
 		glEnable(GL_TEXTURE_2D);
