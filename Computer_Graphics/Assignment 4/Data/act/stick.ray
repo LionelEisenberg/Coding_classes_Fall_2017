@@ -42,7 +42,7 @@
    ../ray/stick.head.ray
 #key_file_num 1
 #key_file
-   run.key
+   ../key/runthru02.key
 #joint_begin ROOT_NATURAL
   #ray_file_instance 0
   #group_begin
@@ -199,4 +199,3 @@
     #joint_end
   #group_end
 #joint_end
-

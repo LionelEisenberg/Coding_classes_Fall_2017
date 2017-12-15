@@ -43,14 +43,76 @@ int RayGroup::drawOpenGL(int materialIndex){
 // Animation Stuff //
 /////////////////////
 Matrix4D ParametrizedEulerAnglesAndTranslation::getMatrix(void){
-	return Matrix4D::IdentityMatrix();
+	Point3D e = this->value->eulerAngles;
+	Point3D translate = this->value->translate;
+	Matrix3D r = Matrix3D(e);
+	Matrix4D trans = Matrix4D();
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			trans(i,j) = r(i,j);
+		}
+	}
+	trans(3,3)=1;
+	trans(0,3)=trans(1,3)=trans(2,3)=0;
+	for (int i = 0; i < 3; i++) {
+		trans(3,i) = translate.p[i];
+	}
+	// printf("%f %f %f\n", e[0],e[1],e[2]);
+	// for (int i = 0; i < 4; i++) {
+	// 	for (int j = 0; j < 4; j++) {
+	// 		printf("%f	", trans(i,j));
+	// 	}
+	// 	printf("\n");
+	// }
+	return trans;
 }
 Matrix4D ParametrizedClosestRotationAndTranslation::getMatrix(void){
-	return Matrix4D::IdentityMatrix();
+		Point3D translate = this->value->translate;
+		Matrix3D r = this->value->rotation;
+		Matrix4D trans = Matrix4D();
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				trans(i,j) = r(i,j);
+			}
+		}
+		trans(3,3)=1;
+		trans(0,3)=trans(1,3)=trans(2,3)=0;
+		for (int i = 0; i < 3; i++) {
+			trans(3,i) = translate.p[i];
+		}
+		// for (int i = 0; i < 4; i++) {
+		// 	for (int j = 0; j < 4; j++) {
+		// 		printf("%f	", trans(i,j));
+		// 	}
+		// 	printf("\n");
+		// }
+		return trans;
 }
+
 Matrix4D ParametrizedRotationLogarithmAndTranslation::getMatrix(void){
-	return Matrix4D::IdentityMatrix();
+	return Matrix4D(Matrix3D::Exp(this->value->skewSymmetric, 100).closestRotation(), this->value->translate);
 }
+
 Matrix4D ParametrizedQuaternionAndTranslation::getMatrix(void){
-	return Matrix4D::IdentityMatrix();
+	Point3D translate = this->value->translate;
+	Quaternion q = this->value->quaternion;
+	Matrix3D r = Matrix3D(q);
+	Matrix4D trans = Matrix4D();
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			trans(i,j) = r(i,j);
+		}
+	}
+	trans(3,3)=1;
+	trans(0,3)=trans(1,3)=trans(2,3)=0;
+	for (int i = 0; i < 3; i++) {
+		trans(3,i) = translate.p[i];
+	}
+	// for (int i = 0; i < 4; i++) {
+	// 	for (int j = 0; j < 4; j++) {
+	// 		printf("%f	", trans(i,j));
+	// 	}
+	// 	printf("\n");
+	// }
+	return trans;
 }
